@@ -451,7 +451,6 @@
 .login-logo .door{stroke:var(--gold);stroke-width:2.2;}
 .login-logo .arrow{stroke:var(--rust);}
 .google-logo{width:28px !important;height:28px !important;}
-.facebook-logo{width:29px !important;height:29px !important;}
 
 
 /* Final account-screen logo/copy layout — preserves existing Tuition Fee palette */
@@ -485,6 +484,7 @@
 // Keep Chrome Desktop-site rendering full-width instead of shrinking the app.
 </script>
 
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <div id="shell">
@@ -778,11 +778,56 @@ function esc(v){ return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&
 
 const WEBSITE_URL = 'https://vik970000.github.io/tuition-fee/';
 const GOOGLE_CLIENT_ID = '882457634333-2bunlj69p5n34ol5ced5lsqv96fr3s6b.apps.googleusercontent.com';
-function openWebsite(kind){
-  if(!WEBSITE_URL){
-    alert('Please add your real Tuition Fee website address before using Website or Google login.');
+let googleReady = false;
+function decodeGoogleJwt(token){
+  try{
+    const part = token.split('.')[1];
+    const b64 = part.replace(/-/g,'+').replace(/_/g,'/');
+    const json = decodeURIComponent(atob(b64.padEnd(Math.ceil(b64.length/4)*4,'=')).split('').map(c=>'%' + ('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(json);
+  }catch(e){ return null; }
+}
+async function handleGoogleCredential(response){
+  const data = response && response.credential ? decodeGoogleJwt(response.credential) : null;
+  if(!data || !data.email){
+    alert('Google sign-in failed. Please try again.');
     return;
   }
+  try{
+    const old = await getProfile();
+    await setProfile({
+      name: data.name || data.email.split('@')[0],
+      email: data.email,
+      age: old && old.age ? old.age : '',
+      country: old && old.country ? old.country : '',
+      googleSub: data.sub || '',
+      createdAt: old && old.createdAt ? old.createdAt : new Date().toISOString()
+    });
+    unlockApp();
+    showToast('✓ Signed in with Google');
+  }catch(e){
+    console.error(e);
+    alert('Could not save your Google account. Please try again.');
+  }
+}
+function startGoogleLogin(){
+  if(!GOOGLE_CLIENT_ID){ alert('Google login is not configured yet.'); return; }
+  const run=()=>{
+    try{
+      if(!googleReady){
+        google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredential});
+        googleReady=true;
+      }
+      google.accounts.id.prompt();
+    }catch(e){
+      console.error(e);
+      alert('Google login could not start. Please open the Tuition Fee website and try again.');
+    }
+  };
+  if(window.google && google.accounts && google.accounts.id) run();
+  else setTimeout(run,700);
+}
+function openWebsite(kind){
   let url=WEBSITE_URL;
   if(kind==='signup') url += (url.includes('?')?'&':'?')+'mode=signup';
   if(kind==='login') url += (url.includes('?')?'&':'?')+'mode=login';
@@ -831,7 +876,7 @@ function renderCreateAccount(){
     </div>`;
   document.getElementById('websiteSignupBtn').onclick=()=>openWebsite('signup');
   document.getElementById('websiteLoginBtn').onclick=()=>openWebsite('login');
-  document.getElementById('googleBtn').onclick=()=>openWebsite('google');
+  document.getElementById('googleBtn').onclick=startGoogleLogin;
 document.getElementById('saveAccountBtn').onclick=async()=>{
     const name=document.getElementById('acctName').value.trim(),email=document.getElementById('acctEmail').value.trim(),age=Number(document.getElementById('acctAge').value),country=document.getElementById('acctCountry').value.trim();
     const err=document.getElementById('authErr'); err.textContent='';
@@ -857,13 +902,11 @@ async function renderLoginScreen(profile){
     <button class="auth-btn" id="loginBtn">Log in</button>
     <button class="auth-secondary auth-method-btn" id="websiteLoginFromBack"><span class="auth-method-icon"><svg class="login-logo" viewBox="0 0 24 24" aria-hidden="true"><path class="door" d="M14.5 4H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4.5"/><path d="M14.5 12H4"/><path class="arrow" d="m9 7-5 5 5 5"/></svg></span><span>Website login</span></button>
     <button class="social-btn auth-method-btn" id="googleFromBack"><span class="auth-method-icon"><svg class="google-logo" viewBox="0 0 48 48" aria-label="Google" role="img"><path fill="#4285F4" d="M47.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h13.2c-.6 3-2.4 5.5-5.1 7.2v6h8.2c4.8-4.4 7.2-10.9 7.2-17.7z"/><path fill="#34A853" d="M24 48c6.5 0 12-2.1 16-5.8l-8.2-6c-2.2 1.5-4.9 2.4-7.8 2.4-6 0-11.1-4.1-12.9-9.6H2.6v6.2A24 24 0 0 0 24 48z"/><path fill="#FBBC05" d="M11.1 29c-.5-1.5-.8-3.1-.8-5s.3-3.5.8-5v-6.2H2.6A24 24 0 0 0 0 24c0 3.9.9 7.6 2.6 11.2L11.1 29z"/><path fill="#EA4335" d="M24 9.4c3.5 0 6.7 1.2 9.1 3.6l6.8-6.8C36 2.3 30.5 0 24 0A24 24 0 0 0 2.6 12.8l8.5 6.2C12.9 13.5 18 9.4 24 9.4z"/></svg></span><span>Continue with Google</span></button>
-    <button class="social-btn auth-method-btn" id="facebookFromBack"><span class="auth-method-icon"><svg class="facebook-logo" viewBox="0 0 48 48" aria-label="Facebook" role="img"><circle cx="24" cy="24" r="22" fill="#1877F2"/><path fill="#fff" d="M26.7 40V26.8h4.5l.7-5.1h-5.2v-3.3c0-1.5.4-2.5 2.6-2.5h2.8v-4.6c-.5-.1-2.2-.2-4.2-.2-4.2 0-7 2.5-7 7.1v3.5h-4.7v5.1h4.7V40h5.8z"/></svg></span><span>Continue with Facebook</span></button>
     <div class="auth-forgot" id="newAccountLink">Create a different account</div>
   `;
   document.getElementById('loginBtn').onclick=()=>unlockApp();
   document.getElementById('websiteLoginFromBack').onclick=openWebsite;
-  document.getElementById('googleFromBack').onclick=openWebsite;
-  document.getElementById('facebookFromBack').onclick=openWebsite;
+  document.getElementById('googleFromBack').onclick=startGoogleLogin;
   document.getElementById('newAccountLink').onclick=async()=>{try{await storageAPI.delete(PROFILE_KEY,false);}catch(e){}renderCreateAccount();};
 }
 function unlockApp(){document.getElementById('authScreen').classList.add('hidden');document.getElementById('appRoot').style.display='';if(!state)init();}
