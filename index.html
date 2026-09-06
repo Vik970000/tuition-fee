@@ -1641,61 +1641,257 @@ function downloadBackup(){
 }
 
 /* ---------------- PDF export ---------------- */
-function pdfCurrencyLabel(){
+function pdfMoney(amount){
   const c = currencyInfo(state.settings.currency);
-  return `${c.code} (${c.symbol})`;
+  const n = Number(amount || 0);
+  return `${c.symbol} ${n.toLocaleString(undefined,{maximumFractionDigits:2})}`;
 }
+function pdfGeneratedStamp(){
+  const d = new Date();
+  const date = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  const time = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  return `${date} ${time}`;
+}
+function pdfDrawHeader(doc, part, generated){
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+
+  // Premium paper background
+  doc.setFillColor(247,244,235);
+  doc.rect(0,0,W,H,'F');
+
+  // Header band
+  doc.setFillColor(35,58,54);
+  doc.rect(0,0,W,38,'F');
+
+  // Gold accent line
+  doc.setFillColor(185,138,46);
+  doc.rect(0,38,W,2,'F');
+
+  doc.setTextColor(239,233,216);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(22);
+  doc.text('Tuition Fee',16,17);
+
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(9.5);
+  doc.setTextColor(214,221,211);
+  doc.text('Manage Education, Manage Better',16,25);
+
+  // Part badge
+  doc.setFillColor(244,228,196);
+  doc.roundedRect(W-58,8,42,22,3,3,'F');
+  doc.setTextColor(35,58,54);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(11);
+  doc.text(part.label || 'Part',W-37,17,{align:'center'});
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(7.5);
+  doc.text('FEE REPORT',W-37,23,{align:'center'});
+
+  // Report metadata
+  doc.setTextColor(91,85,70);
+  doc.setFontSize(8.5);
+  const c = currencyInfo(state.settings.currency);
+  doc.text(`Currency: ${c.symbol} ${c.name}`,16,48);
+  doc.text(`Generated: ${generated}`,W-16,48,{align:'right'});
+}
+
+function pdfDrawTable(doc, part, y){
+  const W = doc.internal.pageSize.getWidth();
+  const left = 12;
+  const right = W-12;
+  const tableW = right-left;
+  const cols = [
+    {h:'No.',w:12,align:'center'},
+    {h:'Name',w:42,align:'left'},
+    {h:'Start',w:30,align:'center'},
+    {h:'Cycle',w:25,align:'center'},
+    {h:'End',w:30,align:'center'},
+    {h:'Fee',w:25,align:'right'},
+    {h:'Status',w:29,align:'center'},
+    {h:'Paid',w:25,align:'right'},
+    {h:'Cr. Date',w:30,align:'center'}
+  ];
+  // Scale widths to exact table width if needed.
+  const totalW = cols.reduce((s,c)=>s+c.w,0);
+  const scale = tableW/totalW;
+  cols.forEach(c=>c.w*=scale);
+
+  const headerH = 10;
+  const rowH = 10;
+  let x = left;
+
+  doc.setFillColor(35,108,81);
+  doc.roundedRect(left,y,tableW,headerH,2,2,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(8);
+  cols.forEach(c=>{
+    const tx = c.align==='center' ? x+c.w/2 : c.align==='right' ? x+c.w-2 : x+2;
+    doc.text(c.h,tx,y+6.6,{align:c.align});
+    x += c.w;
+  });
+
+  let cy = y + headerH;
+  const rows = part.entries || [];
+  rows.forEach((e,i)=>{
+    const isPaid = !!e.paid;
+    const bg = i%2===0 ? [251,248,240] : [244,239,226];
+    doc.setFillColor(...bg);
+    doc.setDrawColor(220,211,188);
+    doc.rect(left,cy,tableW,rowH,'FD');
+
+    x=left;
+    const vals=[
+      String(i+1),
+      String(e.name||'').slice(0,24),
+      e.start||'',
+      e.cycle||'',
+      e.end||'',
+      e.fee==null?'—':pdfMoney(e.fee),
+      isPaid?'Paid':'Pending',
+      isPaid?pdfMoney(e.fee||0):pdfMoney(e.paidAmount||0),
+      e.crDate||'—'
+    ];
+
+    doc.setFont('helvetica',i===0?'bold':'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(38,36,28);
+    cols.forEach((c,j)=>{
+      let tx = c.align==='center' ? x+c.w/2 : c.align==='right' ? x+c.w-2 : x+2;
+      if(j===1) doc.setFont('helvetica','bold');
+      if(j===6){
+        const chipW = 20, chipH = 6.2, chipX = x+(c.w-chipW)/2, chipY=cy+1.9;
+        if(isPaid){
+          doc.setFillColor(228,236,227);
+          doc.setTextColor(63,108,81);
+        }else{
+          doc.setFillColor(244,226,220);
+          doc.setTextColor(166,64,44);
+        }
+        doc.roundedRect(chipX,chipY,chipW,chipH,3,3,'F');
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(7.2);
+        doc.text(vals[j],x+c.w/2,cy+6.1,{align:'center'});
+      }else{
+        doc.setTextColor(38,36,28);
+        doc.text(vals[j],tx,cy+6.4,{align:c.align});
+      }
+      x += c.w;
+    });
+    cy += rowH;
+  });
+  return cy;
+}
+
+function pdfDrawSummary(doc, part, y){
+  const W=doc.internal.pageSize.getWidth();
+  const left=12, boxW=W-24, boxH=24;
+  const entries=part.entries||[];
+  const total=entries.reduce((s,e)=>s+Number(e.fee||0),0);
+  const paid=entries.reduce((s,e)=>s+(e.paid?Number(e.fee||0):Number(e.paidAmount||0)),0);
+  const due=Math.max(0,total-paid);
+  const cards=[
+    ['STUDENTS',String(entries.length),'normal'],
+    ['TOTAL FEE',pdfMoney(total),'normal'],
+    ['PAID',pdfMoney(paid),'paid'],
+    ['DUE',pdfMoney(due),'due']
+  ];
+  doc.setFillColor(232,239,231);
+  doc.setDrawColor(201,218,201);
+  doc.roundedRect(left,y,boxW,boxH,3,3,'FD');
+  const cardW=boxW/4;
+  cards.forEach((c,i)=>{
+    const cx=left+i*cardW+cardW/2;
+    if(i>0){
+      doc.setDrawColor(207,216,204);
+      doc.line(left+i*cardW,y+5,left+i*cardW,y+boxH-5);
+    }
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(91,85,70);
+    doc.text(c[0],cx,y+8,{align:'center'});
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(13);
+    doc.setTextColor(c[2]==='paid'?63:c[2]==='due'?166:38,c[2]==='paid'?108:c[2]==='due'?64:36,c[2]==='paid'?81:c[2]==='due'?44:28);
+    doc.text(c[1],cx,y+17,{align:'center'});
+  });
+  return y+boxH;
+}
+
+function pdfFooter(doc,pageNo,totalPages){
+  const W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
+  doc.setFillColor(35,58,54);
+  doc.rect(0,H-13,W,13,'F');
+  doc.setFillColor(185,138,46);
+  doc.rect(0,H-15,W,2,'F');
+  doc.setTextColor(239,233,216);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7.5);
+  doc.text('Tuition Fee',12,H-5.2);
+  doc.setFont('helvetica','normal');
+  doc.text('Simple. Smart. Secure.',40,H-5.2);
+  doc.text(`Page ${pageNo} of ${totalPages}`,W-12,H-5.2,{align:'right'});
+}
+
 function exportPdf(all){
   if(!window.jspdf || !window.jspdf.jsPDF){
     showToast("PDF export is unavailable right now");
     return;
   }
-  const {jsPDF} = window.jspdf;
-  const doc = new jsPDF({unit:'mm',format:'a4'});
-  const parts = all ? state.parts : [state.parts[currentPartIdx]];
-  let first = true;
+  const {jsPDF}=window.jspdf;
+  const parts=all ? state.parts : [state.parts[currentPartIdx]];
+  if(!parts.length) return;
+
+  // Landscape A4 gives the 9-column fee table proper breathing room.
+  const doc=new jsPDF({unit:'mm',format:'a4',orientation:'landscape'});
+  const generated=pdfGeneratedStamp();
+  let pageNo=0;
+
   parts.forEach(part=>{
-    if(!first) doc.addPage();
-    first=false;
-    let y=18;
-    doc.setFontSize(18);
-    doc.text("Tuition Fee",14,y);
-    y+=8;
-    doc.setFontSize(12);
-    doc.text(part.label || "Part",14,y);
-    y+=6;
-    doc.setFontSize(9);
-    doc.text(`Currency: ${pdfCurrencyLabel()}   Date: DD/MM/YYYY`,14,y);
-    y+=9;
-    const headers = all
-      ? ["No","Name","Start","Cycle","End","Fee","Status","Paid","Cr. Date"]
-      : ["No","Name","Start","Cycle","End","Fee","Status","Paid","Cr. Date"];
-    doc.setFontSize(8);
-    doc.setFont(undefined,'bold');
-    doc.text(headers.join("   "),14,y);
-    y+=5;
-    doc.setFont(undefined,'normal');
-    part.entries.forEach((e,i)=>{
-      if(y>280){ doc.addPage(); y=18; }
-      const vals=[
-        i+1,
-        String(e.name||"").slice(0,24),
-        e.start||"",
-        e.cycle||"",
-        e.end||"",
-        e.fee==null?"":`${cur()} ${e.fee}`,
-        e.paid?"Paid":"Pending",
-        e.paid?"":`${cur()} ${e.paidAmount||0}`,
-        e.crDate||""
-      ];
-      const line=vals.map(v=>String(v).replace(/\s+/g,' ')).join("   ");
-      doc.text(line.slice(0,150),14,y);
-      y+=5;
+    const rows=part.entries||[];
+    const rowsPerPage=Math.max(1,Math.floor((doc.internal.pageSize.getHeight()-86)/10));
+    const chunks=[];
+    for(let i=0;i<rows.length;i+=rowsPerPage) chunks.push(rows.slice(i,i+rowsPerPage));
+    if(!chunks.length) chunks.push([]);
+
+    chunks.forEach((chunk,chunkIndex)=>{
+      if(pageNo>0) doc.addPage();
+      pageNo++;
+      const original=part.entries;
+      part.entries=chunk;
+      pdfDrawHeader(doc,part,generated);
+
+      let y=57;
+      if(chunkIndex===0){
+        y=pdfDrawTable(doc,part,y)+8;
+        y=pdfDrawSummary(doc,part,y)+10;
+        doc.setFont('helvetica','normal');
+        doc.setFontSize(8);
+        doc.setTextColor(91,85,70);
+        doc.text('Report generated from the current Tuition Fee records.',12,y);
+      }else{
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(9);
+        doc.setTextColor(91,85,70);
+        doc.text(`${part.label||'Part'} — continued`,12,54);
+        y=pdfDrawTable(doc,part,58);
+      }
+      part.entries=original;
+      pdfFooter(doc,pageNo,0); // total page count is added after all pages are created
     });
   });
-  const name = all ? "tuition_fee_all_parts.pdf" : `${(state.parts[currentPartIdx].label||"part").replace(/\s+/g,'_')}.pdf`;
-  doc.save(name);
-  showToast(all ? "PDF exported: all parts" : `PDF exported: ${state.parts[currentPartIdx].label}`);
+
+  const totalPages=doc.getNumberOfPages();
+  for(let i=1;i<=totalPages;i++){
+    doc.setPage(i);
+    pdfFooter(doc,i,totalPages);
+  }
+
+  const safeName=(all?'tuition_fee_all_parts':(state.parts[currentPartIdx].label||'part').replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'')).toLowerCase();
+  doc.save(`${safeName||'tuition_fee'}.pdf`);
+  showToast(all ? 'PDF exported: all parts' : `PDF exported: ${state.parts[currentPartIdx].label}`);
 }
 
 /* ---------------- Init ---------------- */
