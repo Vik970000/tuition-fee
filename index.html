@@ -366,6 +366,16 @@
   .opt-menu .item:active{background:var(--line-soft);}
   .opt-menu .item.danger{color:var(--rust);}
   .opt-menu select.inline-sel{font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid var(--line);border-radius:2px;background:var(--paper);padding:3px 5px;}
+  .currency-current{font-family:'IBM Plex Mono',monospace;font-size:11px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .currency-modal{padding-bottom:calc(18px + env(safe-area-inset-bottom));}
+  .currency-modal input[type="search"]{margin-bottom:10px;}
+  .currency-list{max-height:52vh;overflow-y:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);}
+  .currency-option{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:11px 12px;border:0;border-bottom:1px solid var(--line-soft);background:transparent;color:var(--ink);text-align:left;font-family:'Inter',sans-serif;cursor:pointer;}
+  .currency-option:last-child{border-bottom:none;}
+  .currency-option:active{background:var(--line-soft);}
+  .currency-option .currency-name{font-size:13px;}
+  .currency-option .currency-code{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);white-space:nowrap;}
+
   .switch{width:36px;height:20px;background:var(--line);border-radius:20px;position:relative;transition:background .15s;flex:0 0 auto;}
   .switch.on{background:var(--green);}
   .switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left .15s;}
@@ -536,6 +546,7 @@
 <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div id="shell">
@@ -580,18 +591,28 @@
 <div class="opt-menu" id="optMenu">
   <div class="section-label">View</div>
   <div class="item" id="compactToggle">Compact view <div class="switch" id="compactSwitch"></div></div>
-  <div class="item" id="currencyItem">Currency <select class="inline-sel" id="currencySel"></select></div>
-  <div class="item" id="dateFmtItem">Date format <select class="inline-sel" id="dateFmtSel">
-    <option value="DMY">DD/MM/YYYY</option>
-    <option value="MDY">MM/DD/YYYY</option>
-  </select></div>
+  <div class="item" id="currencyItem">Currency <span class="currency-current" id="currencyCurrent">₹ INR</span></div>
   <div class="section-label">Data</div>
   <div class="item" id="exportBtn">Export this part (CSV)</div>
   <div class="item" id="exportAllBtn">Export all parts (CSV)</div>
+  <div class="item" id="exportPdfBtn">Export this part (PDF)</div>
+  <div class="item" id="exportAllPdfBtn">Export all parts (PDF)</div>
   <div class="item" id="backupBtn">Download full backup (JSON)</div>
   <div class="item" id="resetBtn">Clear all data, start over</div>
   <div class="section-label">Account</div>
   <div class="item danger" id="logoutBtn">Log out</div>
+</div>
+
+<!-- Currency picker -->
+<div class="overlay" id="currencyOverlay">
+  <div class="modal currency-modal">
+    <h2>Choose currency</h2>
+    <input id="currencySearch" type="search" placeholder="Search currency or code">
+    <div id="currencyList" class="currency-list"></div>
+    <div class="modal-actions">
+      <button class="btn" id="currencyCancel">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <!-- Add person modal -->
@@ -688,25 +709,9 @@ function isPastDmy(dmy){
   const today = new Date(); today.setHours(0,0,0,0);
   return d.getTime() < today.getTime();
 }
-// Display helpers respect the chosen date format but storage always stays DD/MM/YYYY
-function toDisplayDate(dmy){
-  if(!dmy) return "";
-  if(state && state.settings.dateFormat==='MDY'){
-    const [d,m,y] = dmy.split("/");
-    if(!y) return dmy;
-    return `${m}/${d}/${y}`;
-  }
-  return dmy;
-}
-function fromDisplayDate(str){
-  if(!str) return "";
-  if(state && state.settings.dateFormat==='MDY'){
-    const [m,d,y] = str.split("/");
-    if(!y) return str;
-    return `${d}/${m}/${y}`;
-  }
-  return str;
-}
+// Dates are always displayed and stored as DD/MM/YYYY
+function toDisplayDate(dmy){ return dmy || ""; }
+function fromDisplayDate(str){ return str || ""; }
 function uid(){ return 'r'+Math.random().toString(36).slice(2,10); }
 function todayDmy(){
   const d = new Date();
@@ -791,7 +796,7 @@ let searchTerm = "";
 const STORE_KEY = "tuition-fee-v2";
 const PROFILE_KEY = "tuition-fee-profile-v2";
 const OLD_PROFILE_KEY = "tuition-fee-profile-v1";
-const CURRENCIES = ["₹","$","£","€","AED"];
+
 
 async function loadState(){
   let localState = null;
@@ -801,7 +806,10 @@ async function loadState(){
   }catch(e){}
 
   if(localState){
-    if(!localState.settings) localState.settings = {currency:'₹', dateFormat:'DMY'};
+    if(!localState.settings) localState.settings = {currency:'INR', dateFormat:'DMY'};
+    if(!localState.settings.currency) localState.settings.currency = 'INR';
+    if(localState.settings.currency === '₹') localState.settings.currency = 'INR';
+    localState.settings.dateFormat = 'DMY';
     (localState.parts||[]).forEach(p=>(p.entries||[]).forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; }));
   }
 
@@ -813,16 +821,18 @@ async function loadState(){
         state = snap.data().state;
       }else{
         // First Google login: migrate any existing local data to the cloud.
-        state = localState || {parts:freshParts(),compact:false,settings:{currency:'₹',dateFormat:'DMY'}};
+        state = localState || {parts:freshParts(),compact:false,settings:{currency:'INR',dateFormat:'DMY'}};
         await ref.set({state, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
       }
-      if(!state.settings) state.settings = {currency:'₹', dateFormat:'DMY'};
+      if(!state.settings) state.settings = {currency:'INR', dateFormat:'DMY'};
+      if(state.settings.currency === '₹' || !state.settings.currency) state.settings.currency = 'INR';
+      state.settings.dateFormat = 'DMY';
       (state.parts||[]).forEach(p=>(p.entries||[]).forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; }));
       try{ await storageAPI.set(STORE_KEY, JSON.stringify(state), false); }catch(e){}
       return;
     }catch(e){
       console.error('Cloud load failed',e);
-      state = localState || {parts:freshParts(),compact:false,settings:{currency:'₹',dateFormat:'DMY'}};
+      state = localState || {parts:freshParts(),compact:false,settings:{currency:'INR',dateFormat:'DMY'}};
       showToast('Cloud data could not load');
       return;
     }
@@ -1090,8 +1100,9 @@ async function unlockApp(){
   if(!state) await loadState();
   compact = !!state.compact;
   document.getElementById('compactSwitch').classList.toggle('on', compact);
-  document.getElementById('currencySel').value = state.settings.currency;
-  document.getElementById('dateFmtSel').value = state.settings.dateFormat;
+  normalizeCurrencySetting();
+  state.settings.dateFormat = 'DMY';
+  updateCurrencyCurrent();
   currentPartIdx = state.parts.length - 1;
   for(let i=state.parts.length-1;i>=0;i--){ if(state.parts[i].entries.length>0){ currentPartIdx=i; break; } }
   renderAll();
@@ -1137,7 +1148,7 @@ const summaryEl = document.getElementById('summary');
 const partMetaEl = document.getElementById('partMeta');
 const listEl = document.getElementById('list');
 
-function cur(){ return state.settings.currency; }
+function cur(){ const c=currencyInfo(state.settings.currency); return c.symbol; }
 function fmtFee(fee){
   return fee===null || fee===undefined ? "—" : fee;
 }
@@ -1405,21 +1416,51 @@ document.getElementById('compactToggle').addEventListener('click', ()=>{
 document.getElementById('totalsBtn').addEventListener('click', openTotals);
 document.getElementById('totalsClose').addEventListener('click', ()=> document.getElementById('totalsOverlay').classList.remove('open'));
 
-CURRENCIES.forEach(c=>{
-  const opt = document.createElement('option');
-  opt.value = c; opt.textContent = c;
-  document.getElementById('currencySel').appendChild(opt);
+const CURRENCIES = [{"code":"AED","name":"UAE Dirham","symbol":"د.إ"},{"code":"AFN","name":"Afghani","symbol":"AFN"},{"code":"ALL","name":"Lek","symbol":"L"},{"code":"AMD","name":"Armenian Dram","symbol":"֏"},{"code":"ANG","name":"Netherlands Antillean Guilder","symbol":"ANG"},{"code":"AOA","name":"Kwanza","symbol":"AOA"},{"code":"ARS","name":"Argentine Peso","symbol":"$"},{"code":"AUD","name":"Australian Dollar","symbol":"A$"},{"code":"AWG","name":"Aruban Florin","symbol":"AWG"},{"code":"AZN","name":"Azerbaijan Manat","symbol":"₼"},{"code":"BAM","name":"Convertible Mark","symbol":"KM"},{"code":"BBD","name":"Barbados Dollar","symbol":"Bds$"},{"code":"BDT","name":"Taka","symbol":"৳"},{"code":"BGN","name":"Bulgarian Lev","symbol":"лв"},{"code":"BHD","name":"Bahraini Dinar","symbol":".د.ب"},{"code":"BIF","name":"Burundi Franc","symbol":"BIF"},{"code":"BMD","name":"Bermudian Dollar","symbol":"BMD"},{"code":"BND","name":"Brunei Dollar","symbol":"B$"},{"code":"BOB","name":"Boliviano","symbol":"Bs"},{"code":"BOV","name":"Mvdol","symbol":"BOV"},{"code":"BRL","name":"Brazilian Real","symbol":"R$"},{"code":"BSD","name":"Bahamian Dollar","symbol":"B$"},{"code":"BTN","name":"Ngultrum","symbol":"Nu."},{"code":"BWP","name":"Pula","symbol":"P"},{"code":"BYN","name":"Belarusian Ruble","symbol":"Br"},{"code":"BZD","name":"Belize Dollar","symbol":"BZ$"},{"code":"CAD","name":"Canadian Dollar","symbol":"C$"},{"code":"CDF","name":"Congolese Franc","symbol":"CDF"},{"code":"CHE","name":"WIR Euro","symbol":"CHE"},{"code":"CHF","name":"Swiss Franc","symbol":"CHF"},{"code":"CHW","name":"WIR Franc","symbol":"CHW"},{"code":"CLF","name":"Unidad de Fomento","symbol":"CLF"},{"code":"CLP","name":"Chilean Peso","symbol":"$"},{"code":"CNY","name":"Yuan Renminbi","symbol":"¥"},{"code":"COP","name":"Colombian Peso","symbol":"$"},{"code":"COU","name":"Unidad de Valor Real","symbol":"COU"},{"code":"CRC","name":"Costa Rican Colon","symbol":"₡"},{"code":"CUC","name":"Peso Convertible","symbol":"CUC"},{"code":"CUP","name":"Cuban Peso","symbol":"CUP"},{"code":"CVE","name":"Cabo Verde Escudo","symbol":"CVE"},{"code":"CZK","name":"Czech Koruna","symbol":"Kč"},{"code":"DJF","name":"Djibouti Franc","symbol":"DJF"},{"code":"DKK","name":"Danish Krone","symbol":"kr"},{"code":"DOP","name":"Dominican Peso","symbol":"RD$"},{"code":"DZD","name":"Algerian Dinar","symbol":"دج"},{"code":"EGP","name":"Egyptian Pound","symbol":"E£"},{"code":"ERN","name":"Nakfa","symbol":"ERN"},{"code":"ETB","name":"Ethiopian Birr","symbol":"Br"},{"code":"EUR","name":"Euro","symbol":"€"},{"code":"FJD","name":"Fiji Dollar","symbol":"FJ$"},{"code":"FKP","name":"Falkland Islands Pound","symbol":"£"},{"code":"GBP","name":"Pound Sterling","symbol":"£"},{"code":"GEL","name":"Lari","symbol":"₾"},{"code":"GHS","name":"Ghana Cedi","symbol":"₵"},{"code":"GIP","name":"Gibraltar Pound","symbol":"£"},{"code":"GMD","name":"Dalasi","symbol":"GMD"},{"code":"GNF","name":"Guinean Franc","symbol":"GNF"},{"code":"GTQ","name":"Quetzal","symbol":"Q"},{"code":"GYD","name":"Guyana Dollar","symbol":"GYD"},{"code":"HKD","name":"Hong Kong Dollar","symbol":"HK$"},{"code":"HNL","name":"Lempira","symbol":"L"},{"code":"HRK","name":"Kuna","symbol":"kn"},{"code":"HTG","name":"Gourde","symbol":"HTG"},{"code":"HUF","name":"Forint","symbol":"Ft"},{"code":"IDR","name":"Rupiah","symbol":"Rp"},{"code":"ILS","name":"New Israeli Sheqel","symbol":"₪"},{"code":"INR","name":"Indian Rupee","symbol":"₹"},{"code":"IQD","name":"Iraqi Dinar","symbol":"IQD"},{"code":"IRR","name":"Iranian Rial","symbol":"IRR"},{"code":"ISK","name":"Iceland Krona","symbol":"kr"},{"code":"JMD","name":"Jamaican Dollar","symbol":"J$"},{"code":"JOD","name":"Jordanian Dinar","symbol":"د.ا"},{"code":"JPY","name":"Yen","symbol":"¥"},{"code":"KES","name":"Kenyan Shilling","symbol":"KSh"},{"code":"KGS","name":"Som","symbol":"с"},{"code":"KHR","name":"Riel","symbol":"៛"},{"code":"KMF","name":"Comorian Franc","symbol":"KMF"},{"code":"KPW","name":"North Korean Won","symbol":"KPW"},{"code":"KRW","name":"Won","symbol":"₩"},{"code":"KWD","name":"Kuwaiti Dinar","symbol":"د.ك"},{"code":"KYD","name":"Cayman Islands Dollar","symbol":"KYD"},{"code":"KZT","name":"Tenge","symbol":"₸"},{"code":"LAK","name":"Lao Kip","symbol":"₭"},{"code":"LBP","name":"Lebanese Pound","symbol":"ل.ل"},{"code":"LKR","name":"Sri Lanka Rupee","symbol":"Rs"},{"code":"LRD","name":"Liberian Dollar","symbol":"LRD"},{"code":"LSL","name":"Loti","symbol":"LSL"},{"code":"LYD","name":"Libyan Dinar","symbol":"ل.د"},{"code":"MAD","name":"Moroccan Dirham","symbol":"د.م."},{"code":"MDL","name":"Moldovan Leu","symbol":"L"},{"code":"MGA","name":"Malagasy Ariary","symbol":"MGA"},{"code":"MKD","name":"Denar","symbol":"ден"},{"code":"MMK","name":"Kyat","symbol":"K"},{"code":"MNT","name":"Tugrik","symbol":"₮"},{"code":"MOP","name":"Pataca","symbol":"MOP"},{"code":"MRU","name":"Ouguiya","symbol":"MRU"},{"code":"MUR","name":"Mauritius Rupee","symbol":"₨"},{"code":"MVR","name":"Rufiyaa","symbol":"MVR"},{"code":"MWK","name":"Malawi Kwacha","symbol":"MK"},{"code":"MXN","name":"Mexican Peso","symbol":"MX$"},{"code":"MXV","name":"Mexican Unidad de Inversion (UDI)","symbol":"MXV"},{"code":"MYR","name":"Malaysian Ringgit","symbol":"RM"},{"code":"MZN","name":"Mozambique Metical","symbol":"MT"},{"code":"NAD","name":"Namibia Dollar","symbol":"N$"},{"code":"NGN","name":"Naira","symbol":"₦"},{"code":"NIO","name":"Cordoba Oro","symbol":"C$"},{"code":"NOK","name":"Norwegian Krone","symbol":"kr"},{"code":"NPR","name":"Nepalese Rupee","symbol":"₨"},{"code":"NZD","name":"New Zealand Dollar","symbol":"NZ$"},{"code":"OMR","name":"Rial Omani","symbol":"﷼"},{"code":"PAB","name":"Balboa","symbol":"PAB"},{"code":"PEN","name":"Sol","symbol":"S/"},{"code":"PGK","name":"Kina","symbol":"PGK"},{"code":"PHP","name":"Philippine Peso","symbol":"₱"},{"code":"PKR","name":"Pakistan Rupee","symbol":"₨"},{"code":"PLN","name":"Zloty","symbol":"zł"},{"code":"PYG","name":"Guarani","symbol":"₲"},{"code":"QAR","name":"Qatari Rial","symbol":"ر.ق"},{"code":"RON","name":"Romanian Leu","symbol":"lei"},{"code":"RSD","name":"Serbian Dinar","symbol":"дин."},{"code":"RUB","name":"Russian Ruble","symbol":"₽"},{"code":"RWF","name":"Rwanda Franc","symbol":"RF"},{"code":"SAR","name":"Saudi Riyal","symbol":"﷼"},{"code":"SBD","name":"Solomon Islands Dollar","symbol":"SBD"},{"code":"SCR","name":"Seychelles Rupee","symbol":"₨"},{"code":"SDG","name":"Sudanese Pound","symbol":"ج.س."},{"code":"SEK","name":"Swedish Krona","symbol":"kr"},{"code":"SGD","name":"Singapore Dollar","symbol":"S$"},{"code":"SHP","name":"Saint Helena Pound","symbol":"£"},{"code":"SLE","name":"Leone","symbol":"SLE"},{"code":"SLL","name":"Leone","symbol":"SLL"},{"code":"SOS","name":"Somali Shilling","symbol":"SOS"},{"code":"SRD","name":"Surinam Dollar","symbol":"SRD"},{"code":"SSP","name":"South Sudanese Pound","symbol":"SSP"},{"code":"STN","name":"Dobra","symbol":"STN"},{"code":"SVC","name":"El Salvador Colon","symbol":"SVC"},{"code":"SYP","name":"Syrian Pound","symbol":"SYP"},{"code":"SZL","name":"Lilangeni","symbol":"SZL"},{"code":"THB","name":"Baht","symbol":"฿"},{"code":"TJS","name":"Somoni","symbol":"TJS"},{"code":"TMT","name":"Turkmenistan New Manat","symbol":"TMT"},{"code":"TND","name":"Tunisian Dinar","symbol":"د.ت"},{"code":"TOP","name":"Pa’anga","symbol":"TOP"},{"code":"TRY","name":"Turkish Lira","symbol":"₺"},{"code":"TTD","name":"Trinidad and Tobago Dollar","symbol":"TT$"},{"code":"TWD","name":"New Taiwan Dollar","symbol":"NT$"},{"code":"TZS","name":"Tanzanian Shilling","symbol":"TSh"},{"code":"UAH","name":"Hryvnia","symbol":"₴"},{"code":"UGX","name":"Uganda Shilling","symbol":"USh"},{"code":"USD","name":"US Dollar","symbol":"$"},{"code":"USN","name":"US Dollar (Next day)","symbol":"USN"},{"code":"UYI","name":"Uruguay Peso en Unidades Indexadas (UI)","symbol":"UYI"},{"code":"UYU","name":"Peso Uruguayo","symbol":"$U"},{"code":"UYW","name":"Unidad Previsional","symbol":"UYW"},{"code":"UZS","name":"Uzbekistan Sum","symbol":"лв"},{"code":"VED","name":"Bolívar Soberano","symbol":"VED"},{"code":"VES","name":"Bolívar Soberano","symbol":"VES"},{"code":"VND","name":"Dong","symbol":"₫"},{"code":"VUV","name":"Vatu","symbol":"VUV"},{"code":"WST","name":"Tala","symbol":"WST"},{"code":"XAF","name":"CFA Franc BEAC","symbol":"FCFA"},{"code":"XAG","name":"Silver","symbol":"XAG"},{"code":"XAU","name":"Gold","symbol":"XAU"},{"code":"XBA","name":"Bond Markets Unit European Composite Unit (EURCO)","symbol":"XBA"},{"code":"XBB","name":"Bond Markets Unit European Monetary Unit (E.M.U.-6)","symbol":"XBB"},{"code":"XBC","name":"Bond Markets Unit European Unit of Account 9 (E.U.A.-9)","symbol":"XBC"},{"code":"XBD","name":"Bond Markets Unit European Unit of Account 17 (E.U.A.-17)","symbol":"XBD"},{"code":"XCD","name":"East Caribbean Dollar","symbol":"EC$"},{"code":"XDR","name":"SDR (Special Drawing Right)","symbol":"XDR"},{"code":"XOF","name":"CFA Franc BCEAO","symbol":"CFA"},{"code":"XPD","name":"Palladium","symbol":"XPD"},{"code":"XPF","name":"CFP Franc","symbol":"₣"},{"code":"XPT","name":"Platinum","symbol":"XPT"},{"code":"XSU","name":"Sucre","symbol":"XSU"},{"code":"XTS","name":"Codes specifically reserved for testing purposes","symbol":"XTS"},{"code":"XUA","name":"ADB Unit of Account","symbol":"XUA"},{"code":"XXX","name":"The codes assigned for transactions where no currency is involved","symbol":"¤"},{"code":"YER","name":"Yemeni Rial","symbol":"YER"},{"code":"ZAR","name":"Rand","symbol":"R"},{"code":"ZMW","name":"Zambian Kwacha","symbol":"ZK"},{"code":"ZWL","name":"Zimbabwe Dollar","symbol":"ZWL"}];
+
+function currencyInfo(value){
+  if(!value) return CURRENCIES.find(c=>c.code==='INR') || CURRENCIES[0];
+  return CURRENCIES.find(c=>c.code===value) || CURRENCIES.find(c=>c.symbol===value) || CURRENCIES.find(c=>c.code==='INR') || CURRENCIES[0];
+}
+function normalizeCurrencySetting(){
+  const info = currencyInfo(state.settings.currency);
+  state.settings.currency = info.code;
+}
+function updateCurrencyCurrent(){
+  const info = currencyInfo(state.settings.currency);
+  document.getElementById('currencyCurrent').textContent = `${info.symbol} ${info.code}`;
+}
+function renderCurrencyList(filter=''){
+  const q = String(filter||'').trim().toLowerCase();
+  const list = document.getElementById('currencyList');
+  const matches = CURRENCIES.filter(c =>
+    !q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q) || c.symbol.toLowerCase().includes(q)
+  );
+  list.innerHTML = '';
+  matches.forEach(c=>{
+    const b = document.createElement('button');
+    b.type='button';
+    b.className='currency-option';
+    b.innerHTML = `<span class="currency-name">${c.name}</span><span class="currency-code">${c.code} · ${c.symbol}</span>`;
+    b.addEventListener('click', ()=>{
+      state.settings.currency = c.code;
+      saveSoon();
+      updateCurrencyCurrent();
+      document.getElementById('currencyOverlay').classList.remove('open');
+      renderAll();
+      showToast(`Currency: ${c.code}`);
+    });
+    list.appendChild(b);
+  });
+}
+document.getElementById('currencyItem').addEventListener('click', ()=>{
+  renderCurrencyList('');
+  document.getElementById('currencySearch').value='';
+  document.getElementById('currencyOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('currencySearch').focus(),80);
 });
-document.getElementById('currencySel').addEventListener('change', (e)=>{
-  state.settings.currency = e.target.value;
-  saveSoon();
-  renderAll();
-});
-document.getElementById('dateFmtSel').addEventListener('change', (e)=>{
-  state.settings.dateFormat = e.target.value;
-  saveSoon();
-  renderList();
-});
+document.getElementById('currencySearch').addEventListener('input', e=>renderCurrencyList(e.target.value));
+document.getElementById('currencyCancel').addEventListener('click', ()=>document.getElementById('currencyOverlay').classList.remove('open'));
 
 document.getElementById('exportBtn').addEventListener('click', ()=>{
   exportCsv(false);
@@ -1427,6 +1468,14 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
 });
 document.getElementById('exportAllBtn').addEventListener('click', ()=>{
   exportCsv(true);
+  optMenu.classList.remove('open');
+});
+document.getElementById('exportPdfBtn').addEventListener('click', ()=>{
+  exportPdf(false);
+  optMenu.classList.remove('open');
+});
+document.getElementById('exportAllPdfBtn').addEventListener('click', ()=>{
+  exportPdf(true);
   optMenu.classList.remove('open');
 });
 document.getElementById('backupBtn').addEventListener('click', ()=>{
@@ -1591,13 +1640,72 @@ function downloadBackup(){
   showToast("Backup downloaded");
 }
 
+/* ---------------- PDF export ---------------- */
+function pdfCurrencyLabel(){
+  const c = currencyInfo(state.settings.currency);
+  return `${c.code} (${c.symbol})`;
+}
+function exportPdf(all){
+  if(!window.jspdf || !window.jspdf.jsPDF){
+    showToast("PDF export is unavailable right now");
+    return;
+  }
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({unit:'mm',format:'a4'});
+  const parts = all ? state.parts : [state.parts[currentPartIdx]];
+  let first = true;
+  parts.forEach(part=>{
+    if(!first) doc.addPage();
+    first=false;
+    let y=18;
+    doc.setFontSize(18);
+    doc.text("Tuition Fee",14,y);
+    y+=8;
+    doc.setFontSize(12);
+    doc.text(part.label || "Part",14,y);
+    y+=6;
+    doc.setFontSize(9);
+    doc.text(`Currency: ${pdfCurrencyLabel()}   Date: DD/MM/YYYY`,14,y);
+    y+=9;
+    const headers = all
+      ? ["No","Name","Start","Cycle","End","Fee","Status","Paid","Cr. Date"]
+      : ["No","Name","Start","Cycle","End","Fee","Status","Paid","Cr. Date"];
+    doc.setFontSize(8);
+    doc.setFont(undefined,'bold');
+    doc.text(headers.join("   "),14,y);
+    y+=5;
+    doc.setFont(undefined,'normal');
+    part.entries.forEach((e,i)=>{
+      if(y>280){ doc.addPage(); y=18; }
+      const vals=[
+        i+1,
+        String(e.name||"").slice(0,24),
+        e.start||"",
+        e.cycle||"",
+        e.end||"",
+        e.fee==null?"":`${cur()} ${e.fee}`,
+        e.paid?"Paid":"Pending",
+        e.paid?"":`${cur()} ${e.paidAmount||0}`,
+        e.crDate||""
+      ];
+      const line=vals.map(v=>String(v).replace(/\s+/g,' ')).join("   ");
+      doc.text(line.slice(0,150),14,y);
+      y+=5;
+    });
+  });
+  const name = all ? "tuition_fee_all_parts.pdf" : `${(state.parts[currentPartIdx].label||"part").replace(/\s+/g,'_')}.pdf`;
+  doc.save(name);
+  showToast(all ? "PDF exported: all parts" : `PDF exported: ${state.parts[currentPartIdx].label}`);
+}
+
 /* ---------------- Init ---------------- */
 async function init(){
   await loadState();
   compact = !!state.compact;
   document.getElementById('compactSwitch').classList.toggle('on', compact);
-  document.getElementById('currencySel').value = state.settings.currency;
-  document.getElementById('dateFmtSel').value = state.settings.dateFormat;
+  normalizeCurrencySetting();
+  state.settings.dateFormat = 'DMY';
+  updateCurrencyCurrent();
   currentPartIdx = state.parts.length - 1;
   for(let i=state.parts.length-1;i>=0;i--){
     if(state.parts[i].entries.length>0){ currentPartIdx = i; break; }
