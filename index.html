@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Tuition Fee</title>
+<!-- Firebase Google Auth + Firestore cloud sync enabled -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -484,6 +485,9 @@
 // Keep Chrome Desktop-site rendering full-width instead of shrinking the app.
 </script>
 
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -676,6 +680,20 @@ function freshParts(){
 // Some mobile browsers block localStorage entirely for content://file:// pages
 // (opaque origin) — if so, fall back further to an in-memory store so the app
 // still works for the current session, and warn the user it won't persist.
+// Firebase cloud sync (Google Authentication + Cloud Firestore)
+const firebaseConfig = {
+  apiKey: "AIzaSyC6hXYH5LzKmdJC1VOJDDGakjsa7LXR8gk",
+  authDomain: "tuition-fee-b7217.firebaseapp.com",
+  projectId: "tuition-fee-b7217",
+  storageBucket: "tuition-fee-b7217.firebasestorage.app",
+  messagingSenderId: "92920187188",
+  appId: "1:92920187188:web:a5e5cd012b1a6d0aa5bd61"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const firebaseAuth = firebase.auth();
+const firebaseDb = firebase.firestore();
+let firebaseUser = null;
+
 const hasClaudeStorage = (typeof window!=='undefined' && !!window.storage);
 function localStorageWorks(){
   try{
@@ -729,25 +747,54 @@ const OLD_PROFILE_KEY = "tuition-fee-profile-v1";
 const CURRENCIES = ["₹","$","£","€","AED"];
 
 async function loadState(){
+  let localState = null;
   try{
     const res = await storageAPI.get(STORE_KEY, false);
-    if(res && res.value){
-      state = JSON.parse(res.value);
+    if(res && res.value) localState = JSON.parse(res.value);
+  }catch(e){}
+
+  if(localState){
+    if(!localState.settings) localState.settings = {currency:'₹', dateFormat:'DMY'};
+    (localState.parts||[]).forEach(p=>(p.entries||[]).forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; }));
+  }
+
+  if(firebaseUser){
+    try{
+      const ref = firebaseDb.collection('users').doc(firebaseUser.uid).collection('app').doc('main');
+      const snap = await ref.get();
+      if(snap.exists && snap.data() && snap.data().state){
+        state = snap.data().state;
+      }else{
+        // First Google login: migrate any existing local data to the cloud.
+        state = localState || {parts:freshParts(),compact:false,settings:{currency:'₹',dateFormat:'DMY'}};
+        await ref.set({state, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      }
       if(!state.settings) state.settings = {currency:'₹', dateFormat:'DMY'};
-      state.parts.forEach(p=>p.entries.forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; }));
+      (state.parts||[]).forEach(p=>(p.entries||[]).forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; }));
+      try{ await storageAPI.set(STORE_KEY, JSON.stringify(state), false); }catch(e){}
+      return;
+    }catch(e){
+      console.error('Cloud load failed',e);
+      state = localState || {parts:freshParts(),compact:false,settings:{currency:'₹',dateFormat:'DMY'}};
+      showToast('Cloud data could not load');
       return;
     }
-  }catch(e){ /* not found */ }
-  state = { parts: freshParts(), compact:false, settings:{currency:'₹', dateFormat:'DMY'} };
-  await saveState();
+  }
+
+  state = localState || {parts:freshParts(),compact:false,settings:{currency:'₹',dateFormat:'DMY'}};
+  if(!localState){ try{ await storageAPI.set(STORE_KEY, JSON.stringify(state), false); }catch(e){} }
 }
 async function saveState(){
   try{
+    if(firebaseUser){
+      const ref = firebaseDb.collection('users').doc(firebaseUser.uid).collection('app').doc('main');
+      await ref.set({state, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    }
     await storageAPI.set(STORE_KEY, JSON.stringify(state), false);
     flashSaved();
   }catch(e){
     console.error("save failed", e);
-    showToast("Couldn't save — check your connection");
+    showToast(firebaseUser ? "Couldn't save to cloud — check your connection" : "Couldn't save — check your connection");
   }
 }
 function debounce(fn, ms){
@@ -766,12 +813,26 @@ function flashSaved(){
 
 /* ---------------- Account: Name / Email / Age / Country ---------------- */
 async function getProfile(){
+  if(firebaseUser){
+    try{
+      const snap = await firebaseDb.collection('users').doc(firebaseUser.uid).get();
+      if(snap.exists) return snap.data();
+    }catch(e){ console.error('Profile cloud load failed',e); }
+  }
   try{
     const res=await storageAPI.get(PROFILE_KEY,false);
     return res && res.value ? JSON.parse(res.value) : null;
   }catch(e){ return null; }
 }
-async function setProfile(p){ await storageAPI.set(PROFILE_KEY,JSON.stringify(p),false); }
+async function setProfile(p){
+  if(firebaseUser){
+    await firebaseDb.collection('users').doc(firebaseUser.uid).set(
+      {...p,uid:firebaseUser.uid,email:firebaseUser.email||p.email},
+      {merge:true}
+    );
+  }
+  await storageAPI.set(PROFILE_KEY,JSON.stringify(p),false);
+}
 
 function authCardEl(){ return document.getElementById('authCard'); }
 function esc(v){ return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
@@ -788,26 +849,16 @@ function decodeGoogleJwt(token){
   }catch(e){ return null; }
 }
 async function handleGoogleCredential(response){
-  const data = response && response.credential ? decodeGoogleJwt(response.credential) : null;
-  if(!data || !data.email){
+  if(!response || !response.credential){
     alert('Google sign-in failed. Please try again.');
     return;
   }
   try{
-    const old = await getProfile();
-    await setProfile({
-      name: data.name || data.email.split('@')[0],
-      email: data.email,
-      age: old && old.age ? old.age : '',
-      country: old && old.country ? old.country : '',
-      googleSub: data.sub || '',
-      createdAt: old && old.createdAt ? old.createdAt : new Date().toISOString()
-    });
-    unlockApp();
-    showToast('✓ Signed in with Google');
+    const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
+    await firebaseAuth.signInWithCredential(credential);
   }catch(e){
     console.error(e);
-    alert('Could not save your Google account. Please try again.');
+    alert('Could not sign in with Google. Please try again.');
   }
 }
 function startGoogleLogin(){
@@ -877,14 +928,14 @@ function renderCreateAccount(){
 
     <div class="auth-section">
       <div class="auth-section-title">Create an Account</div>
-      <p class="auth-copy">Save your account only on this device.</p>
+      <p class="auth-copy">For cloud access on another phone, use Continue with Google.</p>
 
       <div class="auth-form-row"><span class="auth-form-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"/></svg></span><input id="acctName" data-plain="1" placeholder="Your name" autocomplete="name"></div>
       <div class="auth-form-row"><span class="auth-form-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span><input id="acctEmail" data-plain="1" type="email" placeholder="you@example.com" autocomplete="email"></div>
       <div class="auth-form-row"><span class="auth-form-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg></span><input id="acctAge" data-plain="1" type="number" inputmode="numeric" min="1" max="120" placeholder="Your age"></div>
       <div class="auth-form-row"><span class="auth-form-icon"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-12A7 7 0 0 0 5 9c0 5.9 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/></svg></span><input id="acctCountry" data-plain="1" placeholder="Your country" autocomplete="country-name"></div>
 
-      <button class="auth-btn auth-save" id="saveAccountBtn"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3.2"/><path d="M2.8 20c.6-3.6 2.5-5.5 5.2-5.5s4.6 1.9 5.2 5.5"/><path d="M17 11v8M13 15h8"/></svg>Save account</button>
+      <button class="auth-btn auth-save" id="saveAccountBtn"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3.2"/><path d="M2.8 20c.6-3.6 2.5-5.5 5.2-5.5s4.6 1.9 5.2 5.5"/><path d="M17 11v8M13 15h8"/></svg>Save locally</button>
       <div class="auth-error" id="authErr"></div>
     </div>`;
   document.getElementById('websiteSignupBtn').onclick=()=>openWebsite('signup');
@@ -897,7 +948,7 @@ document.getElementById('saveAccountBtn').onclick=async()=>{
     if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Enter a valid email.';return;}
     if(!Number.isInteger(age)||age<1||age>120){err.textContent='Enter your age.';return;}
     if(!country){err.textContent='Enter your country.';return;}
-    try{await setProfile({name,email,age,country,createdAt:new Date().toISOString()});unlockApp();showToast('✓ Account saved on this device');}
+    try{await setProfile({name,email,age,country,createdAt:new Date().toISOString()});unlockApp();showToast('✓ Saved on this device');}
     catch(e){console.error(e);err.textContent='Could not save. Please try again.';}
   };
 }
@@ -922,8 +973,56 @@ async function renderLoginScreen(profile){
   document.getElementById('googleFromBack').onclick=startGoogleLogin;
   document.getElementById('newAccountLink').onclick=async()=>{try{await storageAPI.delete(PROFILE_KEY,false);}catch(e){}renderCreateAccount();};
 }
-function unlockApp(){document.getElementById('authScreen').classList.add('hidden');document.getElementById('appRoot').style.display='';if(!state)init();}
-async function startAuthFlow(){if(persistenceWarningNeeded)showToast('Your browser may not save data after you close this file');try{await storageAPI.delete(OLD_PROFILE_KEY,false);}catch(e){}const profile=await getProfile();if(profile)renderLoginScreen(profile);else renderCreateAccount();}
+async function unlockApp(){
+  if(!firebaseUser){
+    showToast('Please use Continue with Google first');
+    return;
+  }
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appRoot').style.display='';
+  if(!state) await loadState();
+  compact = !!state.compact;
+  document.getElementById('compactSwitch').classList.toggle('on', compact);
+  document.getElementById('currencySel').value = state.settings.currency;
+  document.getElementById('dateFmtSel').value = state.settings.dateFormat;
+  currentPartIdx = state.parts.length - 1;
+  for(let i=state.parts.length-1;i>=0;i--){ if(state.parts[i].entries.length>0){ currentPartIdx=i; break; } }
+  renderAll();
+}
+async function startAuthFlow(){
+  if(persistenceWarningNeeded)showToast('Your browser may not save data after you close this file');
+  try{await storageAPI.delete(OLD_PROFILE_KEY,false);}catch(e){}
+  firebaseAuth.onAuthStateChanged(async(user)=>{
+    firebaseUser=user||null;
+    if(firebaseUser){
+      try{
+        const googleProfile={
+          name:firebaseUser.displayName || (firebaseUser.email||'').split('@')[0],
+          email:firebaseUser.email || '',
+          age:'', country:'',
+          googleSub:firebaseUser.uid,
+          createdAt:new Date().toISOString()
+        };
+        let profile=await getProfile();
+        if(!profile){ profile=googleProfile; }
+        else { profile={...googleProfile,...profile,email:firebaseUser.email||profile.email}; }
+        await setProfile(profile);
+        await loadState();
+        renderLoginScreen(profile);
+      }catch(e){
+        console.error(e);
+        alert('Signed in, but your cloud data could not be loaded yet.');
+        renderCreateAccount();
+      }
+    }else{
+      state=null;
+      document.getElementById('appRoot').style.display='none';
+      document.getElementById('authScreen').classList.remove('hidden');
+      renderCreateAccount();
+    }
+  });
+}
+
 
 /* ---------------- Rendering ---------------- */
 const tabsWrap = document.getElementById('tabsWrap');
@@ -1241,10 +1340,7 @@ document.getElementById('resetBtn').addEventListener('click', async ()=>{
 
 document.getElementById('logoutBtn').addEventListener('click', async ()=>{
   optMenu.classList.remove('open');
-  document.getElementById('appRoot').style.display='none';
-  document.getElementById('authScreen').classList.remove('hidden');
-  const profile=await getProfile();
-  if(profile) renderLoginScreen(profile); else renderCreateAccount();
+  try{ await firebaseAuth.signOut(); }catch(e){ console.error(e); }
 });
 
 document.addEventListener('click', (e)=>{
