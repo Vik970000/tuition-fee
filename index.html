@@ -216,7 +216,6 @@
     position:relative;
     border-left:3px solid transparent;
   }
-  .row-card.overdue{border-left-color:var(--rust);}
   .row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
   .row-no{
     font-family:'IBM Plex Mono',monospace;
@@ -283,7 +282,6 @@
   .status-chip.pending{background:var(--rust-bg);color:var(--rust);border-color:#e6c9be;}
   .status-chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
   .crdate-line{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);margin-top:6px;}
-  .overdue-flag{font-size:10px;font-weight:700;color:var(--rust);margin-left:6px;text-transform:uppercase;letter-spacing:.04em;}
 
   /* Compact table view */
   .list.compact .row-card{padding:0;border:none;background:none;margin:0;}
@@ -293,7 +291,6 @@
     background:var(--line-soft);color:var(--ink-soft);font-family:'Inter',sans-serif;font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:7px 6px;font-weight:600;
   }
   table.compact-table td{padding:8px 6px;border-top:1px solid var(--line-soft);vertical-align:middle;}
-  table.compact-table tr.overdue-row{background:var(--rust-bg);}
   table.compact-table td.name-cell{font-family:'Fraunces',serif;font-weight:600;font-size:12.5px;outline:none;}
   table.compact-table td[contenteditable]:focus{background:var(--gold-bg);outline:none;}
   .mini-chip{font-size:9.5px;font-weight:700;padding:3px 7px;border-radius:10px;cursor:pointer;white-space:nowrap;}
@@ -387,6 +384,7 @@
     z-index:50;display:none;align-items:flex-end;justify-content:center;
   }
   .overlay.open{display:flex;}
+  #studentFormOverlay{z-index:110;}
   .modal{
     background:var(--paper-raised);
     width:100%;max-width:480px;
@@ -537,6 +535,165 @@
 #authScreen #newAccountLink{display:block !important;color:#1473e6 !important;opacity:1 !important;font-size:15px !important;font-weight:700 !important;text-align:center !important;text-decoration:none !important;margin-top:20px !important;}
 #authScreen #newAccountLink:active{opacity:.75 !important;}
 @media(max-width:520px){#authScreen{padding:18px 12px 28px !important;}#authScreen .auth-brand-logo{width:92px !important;height:92px !important;}#authScreen .auth-mark{font-size:32px !important;}#authScreen .auth-welcome{font-size:30px !important;margin-top:18px !important;}#authScreen .account-details div{font-size:16px !important;}}
+
+
+  /* ================= Students ================= */
+  .students-overlay{position:fixed;inset:0;z-index:97;display:none;background:#F3F3F8;color:#111;overflow:hidden;}
+  .students-overlay.open{display:block;}
+  .students-screen{width:100%;height:100%;max-width:480px;margin:0 auto;background:#F3F3F8;overflow:auto;padding-bottom:28px;}
+  .students-head{position:sticky;top:0;z-index:12;background:#fff;border-bottom:1px solid #E1E1E6;min-height:86px;padding:12px 12px 10px;display:grid;grid-template-columns:44px minmax(0,1fr) 150px;align-items:center;column-gap:6px;box-sizing:border-box;}
+  .students-menu-btn,.students-back-btn{border:0;background:none;color:#0B347D;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .students-menu-btn{font-size:31px;line-height:1;}
+  .students-back-btn{font-size:46px;line-height:1;width:44px;height:44px;}
+  .students-title-wrap{text-align:center;min-width:0;}
+  .students-title{font-size:25px;font-weight:800;line-height:1.1;color:#111;white-space:nowrap;overflow:hidden;text-overflow:clip;}
+  .students-title-icon{color:#0B347D;margin-right:6px;font-size:24px;}
+  .students-subtitle{font-size:12.5px;color:#8A8A8F;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:clip;}
+  .students-add-top{width:150px;height:64px;padding:0 10px;border-radius:18px;border:2px solid #BFD6F6;background:#EEF5FF;color:#3279DE;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;font-weight:800;line-height:1.05;box-sizing:border-box;justify-self:end}.students-add-top .add-plus{font-size:38px;font-weight:400;line-height:1}.students-add-top .add-label{font-size:16px;text-align:center;line-height:1.05;white-space:nowrap}
+  @media(max-width:390px){.students-head{grid-template-columns:40px minmax(0,1fr) 132px;padding-left:8px;padding-right:8px;}.students-add-top{width:132px;height:60px;}.students-add-top .add-plus{font-size:34px}.students-add-top .add-label{font-size:14px}.students-title{font-size:23px}.students-subtitle{font-size:11.5px;}}
+  .students-body{padding:14px;}
+  .students-tools{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:12px;margin-bottom:14px;}
+  .students-search,.students-filter-btn{height:64px;background:#fff;border:1px solid #E1E1E6;border-radius:18px;box-shadow:0 3px 8px rgba(20,25,40,.05);display:flex;align-items:center;}
+  .students-search{padding:0 16px;gap:12px;}
+  .students-search-icon{font-size:29px;color:#A5A5AA;line-height:1;}
+  .students-search input{border:0;outline:0;width:100%;font-size:17px;background:transparent;color:#111;}
+  .students-search input::placeholder{color:#C4C4C8;}
+  .students-filter-btn{padding:0 15px;gap:9px;justify-content:center;color:#85858A;font-size:15px;font-weight:700;cursor:pointer;}
+  .students-filter-icon{font-size:22px;}
+  .students-filter-row{display:none;background:#fff;border:1px solid #E1E1E6;border-radius:16px;padding:8px;margin:-4px 0 12px;gap:8px;}
+  .students-filter-row.open{display:grid;grid-template-columns:repeat(3,1fr);}
+  .students-filter-chip{border:1px solid #E0E3E8;background:#fff;border-radius:12px;min-height:40px;font-size:12px;font-weight:800;color:#777;cursor:pointer;}
+  .students-filter-chip.active{background:#EEF5FF;color:#0B347D;border-color:#BFD6F6;}
+  .students-list{display:flex;flex-direction:column;gap:12px;}
+  .student-card{background:#fff;border:1px solid #E1E1E6;border-radius:22px;box-shadow:0 3px 8px rgba(20,25,40,.08);padding:14px 14px 14px 0;display:grid;grid-template-columns:5px 66px minmax(0,1fr) auto;gap:12px;align-items:center;cursor:pointer;overflow:hidden;}
+  .student-card.personal{border-left-color:#8B5CF6;}
+  .student-card.batch{border-left-color:#2F7DE1;}
+  .student-accent{width:5px;height:100%;min-height:112px;background:#36C46D;}
+  .student-card.pending .student-accent{background:#F0A33A;}
+  .student-avatar{width:62px;height:62px;border-radius:50%;background:#8B5CF6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:800;flex:0 0 auto;}
+  .student-card.batch .student-avatar{background:#347BE5;}
+  .student-main{min-width:0;}
+  .student-name-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .student-name{font-size:20px;font-weight:800;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .student-paid{border:2px solid #3BC56C;color:#28B95D;background:#F3FFF7;border-radius:12px;padding:3px 8px;font-size:11px;font-weight:800;white-space:nowrap;}
+  .student-pending{border:2px solid #E5A33E;color:#C98112;background:#FFF9EC;border-radius:12px;padding:3px 8px;font-size:11px;font-weight:800;white-space:nowrap;}
+  .student-type{display:inline-block;margin-top:8px;padding:5px 11px;border:2px solid #D8C6FA;background:#FAF6FF;color:#8B5CF6;border-radius:11px;font-size:13px;font-weight:800;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .student-card.batch .student-type{border-color:#BFD6F6;background:#F1F7FF;color:#0B5FB7;}
+  .student-view{color:#0B347D;font-size:15px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:3px;padding-right:4px;}
+  .student-view .chev{font-size:28px;font-weight:400;line-height:1;}
+  .students-empty{background:#fff;border:1px dashed #D5D8DF;border-radius:20px;padding:42px 20px;text-align:center;color:#8A8A8F;font-size:14px;}
+  .students-empty strong{display:block;color:#111;font-size:19px;margin-bottom:5px;}
+  .student-detail{position:fixed;inset:0;z-index:98;display:none;background:#F3F3F8;color:#111;overflow:hidden;}
+  .student-detail.open{display:block;}
+  .student-detail-screen{width:100%;height:100%;max-width:480px;margin:0 auto;overflow:auto;padding-bottom:28px;}
+  .student-detail-head{position:sticky;top:0;z-index:12;background:#fff;border-bottom:1px solid #E1E1E6;min-height:72px;padding:10px 14px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;}
+  .student-detail-title{text-align:center;font-size:21px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .student-settings{border:0;background:none;color:#0B347D;font-size:29px;cursor:pointer;}
+  .student-profile-card{margin:14px;background:#fff;border:1px solid #E1E1E6;border-radius:22px;padding:22px 18px 18px;box-shadow:0 3px 9px rgba(20,25,40,.08);text-align:center;}
+  .student-detail-avatar{width:90px;height:90px;border-radius:50%;margin:0 auto 12px;background:#347BE5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:31px;font-weight:800;}
+  .student-detail-name{font-size:30px;font-weight:800;}
+  .student-detail-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;border:2px solid #C9D5E7;background:#F4F7FC;color:#0B347D;border-radius:22px;padding:7px 14px;font-size:15px;font-weight:800;}
+  .student-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:20px;padding-top:18px;border-top:1px solid #E9E9EC;gap:8px;}
+  .student-stat{min-width:0;}
+  .student-stat+.student-stat{border-left:1px solid #E5E5E8;}
+  .student-stat-label{font-size:12px;color:#8A8A8F;font-weight:700;}
+  .student-stat-value{font-size:17px;font-weight:800;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .student-tabs{display:grid;grid-template-columns:repeat(3,1fr);margin:0 14px 18px;background:#E8EBF2;border-radius:18px;padding:4px;}
+  .student-tab{border:0;background:transparent;color:#96979D;min-height:50px;border-radius:15px;font-size:13px;font-weight:800;cursor:pointer;}
+  .student-tab.active{background:#0B347D;color:#fff;box-shadow:0 2px 5px rgba(11,52,125,.2);}
+  .student-feature-title{margin:0 14px 10px;font-size:13px;color:#8A8A8F;font-weight:900;letter-spacing:.04em;text-transform:uppercase;}
+  .student-feature-card{margin:0 14px 10px;background:#fff;border:1px solid #E1E1E6;border-radius:20px;min-height:78px;padding:13px 14px;display:flex;align-items:center;gap:13px;box-shadow:0 2px 7px rgba(20,25,40,.05);cursor:pointer;}
+  .student-feature-icon{width:50px;height:50px;border-radius:16px;background:#EEF2F8;color:#0B347D;display:flex;align-items:center;justify-content:center;font-size:24px;}
+  .student-feature-icon.att{background:#E8F9F1;color:#18A66D;}
+  .student-feature-text{min-width:0;}
+  .student-feature-text b{font-size:17px;}
+  .student-feature-text span{display:block;color:#9A9A9F;font-size:13px;margin-top:3px;}
+  .student-feature-chevron{margin-left:auto;color:#B0B0B5;font-size:28px;}
+  @media(max-width:390px){
+    .students-tools{grid-template-columns:minmax(0,1fr) 108px;}
+    .students-filter-btn{padding:0 9px;font-size:13px;}
+    .student-card{grid-template-columns:5px 56px minmax(0,1fr) auto;gap:9px;}
+    .student-avatar{width:54px;height:54px;font-size:19px;}
+    .student-name{font-size:17px;}
+    .student-view{font-size:12px;}
+  }
+
+  /* Attendance */
+  .attendance-overlay{position:fixed;inset:0;z-index:96;display:none;background:#F3F3F8;color:#111;overflow:hidden;}
+  .attendance-overlay.open{display:block;}
+  .attendance-screen{width:100%;height:100%;max-width:480px;margin:0 auto;background:#F3F3F8;overflow:auto;padding-bottom:28px;}
+  .attendance-head{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #E1E1E6;min-height:84px;padding:14px 14px 12px;display:grid;grid-template-columns:42px 1fr 42px;align-items:center;}
+  .attendance-back{border:0;background:none;font-size:46px;line-height:1;color:#0B347D;width:42px;height:42px;padding:0;cursor:pointer;}
+  .attendance-title-wrap{text-align:center;min-width:0;}
+  .attendance-title{font-size:22px;font-weight:800;white-space:nowrap;}
+  .attendance-title-icon{display:inline-flex;width:27px;height:27px;border-radius:50%;align-items:center;justify-content:center;background:#0A347D;color:#fff;font-size:17px;vertical-align:2px;margin-right:6px;}
+  .attendance-subtitle{font-size:12.5px;color:#8A8A8F;margin-top:5px;white-space:nowrap;}
+  .attendance-head-spacer{width:42px;}
+  .attendance-body{padding:14px;}
+  .attendance-date-card{background:#fff;border:1px solid #E1E1E6;border-radius:18px;padding:14px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 3px 8px rgba(20,25,40,.06);}
+  .attendance-date-label{font-size:12px;color:#8A8A8F;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+  .attendance-date-hint{font-size:18px;font-weight:800;margin-top:3px;color:#111;}
+  .attendance-date-card input{border:1px solid #DDE2EA;border-radius:12px;background:#F8FAFD;color:#102B63;padding:10px 9px;font:700 14px 'Inter',sans-serif;min-width:146px;}
+  .attendance-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+  .attendance-count{background:#fff;border:1px solid #E1E1E6;border-radius:15px;padding:11px 8px;text-align:center;}
+  .attendance-count .n{font-size:20px;font-weight:800;line-height:1;}
+  .attendance-count .l{font-size:10px;font-weight:800;color:#8A8A8F;text-transform:uppercase;margin-top:5px;}
+  .attendance-count.present .n{color:#16A36F;}
+  .attendance-count.absent .n{color:#D84848;}
+  .attendance-count.holiday .n{color:#2376D8;}
+  .attendance-note{margin-top:10px;background:#EAF3FF;border:1px solid #CFE3FA;color:#175EA8;border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.45;}
+  .attendance-list{margin-top:12px;display:flex;flex-direction:column;gap:10px;}
+  .attendance-row{background:#fff;border:1px solid #E1E1E6;border-radius:18px;padding:14px;box-shadow:0 3px 8px rgba(20,25,40,.06);}
+  .attendance-row-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .attendance-no{width:34px;height:34px;border-radius:10px;background:#F1F4F8;color:#8A8A8F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:0 0 auto;}
+  .attendance-name{font-size:16px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .attendance-current{margin-left:auto;font-size:11px;font-weight:800;padding:5px 8px;border-radius:10px;white-space:nowrap;}
+  .attendance-current.present{background:#E5F7EF;color:#12875E;}
+  .attendance-current.absent{background:#FDEAEA;color:#C23C3C;}
+  .attendance-current.holiday{background:#E7F1FF;color:#1766B4;}
+  .attendance-current.unmarked{background:#F2F2F4;color:#8A8A8F;}
+  .attendance-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .attendance-btn{border:1px solid #E0E3E8;background:#fff;border-radius:12px;min-height:44px;font-size:13px;font-weight:800;cursor:pointer;}
+  .attendance-btn.present{color:#159567;}
+  .attendance-btn.absent{color:#D84848;}
+  .attendance-btn.holiday{color:#2376D8;}
+  .attendance-btn.active.present{background:#DDF5EA;border-color:#A9DFC8;}
+  .attendance-btn.active.absent{background:#FBE2E2;border-color:#F0B6B6;}
+  .attendance-btn.active.holiday{background:#E1EEFF;border-color:#B7D4F5;}
+  .attendance-empty{background:#fff;border:1px dashed #D5D8DF;border-radius:18px;padding:30px 18px;text-align:center;color:#8A8A8F;font-size:14px;}
+  @media(max-width:390px){.attendance-date-card input{min-width:132px;font-size:13px}.attendance-title{font-size:20px}.attendance-subtitle{font-size:11px}.attendance-btn{font-size:12px;}}
+
+  .sigma-menu{
+    position:absolute;top:66px;right:58px;z-index:60;display:none;
+    width:218px;background:#fff;border:1px solid #E4E4E8;border-radius:14px;
+    box-shadow:0 12px 30px rgba(20,35,70,.18);overflow:hidden;color:#111;
+  }
+  .sigma-menu.open{display:block;}
+  .sigma-item{padding:15px 16px;font-size:14px;font-weight:700;border-bottom:1px solid #eee;cursor:pointer;background:#fff;}
+  .sigma-item:last-child{border-bottom:0;}
+  .sigma-item:active{background:#F1F4FA;}
+
+
+  /* ===== Desktop-site / viewport consistency =====
+     Keep the same responsive layout when Chrome Desktop site changes the
+     reported CSS viewport. Full-width screens keep the existing control,
+     spacing and typography sizes. */
+  @media (min-width:560px){
+    #shell,
+    #appRoot,
+    #authScreen,
+    .attendance-screen,
+    .attendance-overlay,
+    .reports-overlay{
+      width:100%;
+      left:0;
+      right:0;
+    }
+    .attendance-body,
+    .attendance-actions{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .attendance-summary{grid-template-columns:repeat(3,minmax(0,1fr));}
+  }
+
 </style>
 
 <script>
@@ -566,8 +723,13 @@
       <span id="saveIndicator">saved</span>
     </div>
     <div class="top-actions">
-      <button class="icon-btn" id="totalsBtn" title="All-time totals">Σ</button>
+      <button class="icon-btn" id="totalsBtn" title="Menu">Σ</button>
       <button class="icon-btn" id="optBtn" title="Options">⋯</button>
+    </div>
+    <div class="sigma-menu" id="sigmaMenu">
+      <div class="sigma-item" id="sigmaTotals">Σ &nbsp; All-time totals</div>
+      <div class="sigma-item" id="sigmaStudents">👥 &nbsp; Students</div>
+      <div class="sigma-item" id="sigmaAttendance">✓ &nbsp; Attendance</div>
     </div>
   </div>
   <div class="search-wrap">
@@ -665,6 +827,101 @@
     <div id="totalsBody"></div>
     <div class="modal-actions">
       <button class="btn primary" id="totalsClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Students -->
+<div id="studentsOverlay" class="students-overlay">
+  <div class="students-screen">
+    <div class="students-head">
+      <button class="students-menu-btn" id="studentsMenuBtn" aria-label="Menu">☰</button>
+      <div class="students-title-wrap">
+        <div class="students-title"><span class="students-title-icon">👥</span>Students</div>
+        <div class="students-subtitle">Manage batch &amp; personal students</div>
+      </div>
+      <button class="students-add-top" id="studentsAddTop" aria-label="Add student"><span class="add-plus">＋</span><span class="add-label">Add<br>Student</span></button>
+    </div>
+    <div class="students-body">
+      <div class="students-tools">
+        <div class="students-search">
+          <span class="students-search-icon">⌕</span>
+          <input id="studentsSearch" placeholder="Search students by name">
+        </div>
+        <button class="students-filter-btn" id="studentsFilterBtn"><span class="students-filter-icon">▽</span> Add Filter</button>
+      </div>
+      <div class="students-filter-row" id="studentsFilterRow">
+        <button class="students-filter-chip active" data-filter="all">All</button>
+        <button class="students-filter-chip" data-filter="personal">Personal</button>
+        <button class="students-filter-chip" data-filter="batch">Batch</button>
+      </div>
+      <div class="students-list" id="studentsList"></div>
+    </div>
+  </div>
+</div>
+
+<div id="studentDetail" class="student-detail">
+  <div class="student-detail-screen">
+    <div class="student-detail-head">
+      <button class="student-back-btn" id="studentDetailBack" aria-label="Back">‹</button>
+      <div class="student-detail-title" id="studentDetailTitle">Student's Details</div>
+      <button class="student-settings" id="studentSettings" aria-label="Student settings">⚙</button>
+    </div>
+    <div id="studentDetailBody"></div>
+  </div>
+</div>
+
+<!-- Student add/edit modal -->
+<div class="overlay" id="studentFormOverlay">
+  <div class="modal">
+    <h2 id="studentFormTitle">Add student</h2>
+    <label>Name</label>
+    <input id="sName" placeholder="Full name">
+    <label>Student type</label>
+    <select id="sType">
+      <option value="personal">Personal</option>
+      <option value="batch">Batch</option>
+    </select>
+    <label>Batch / Class</label>
+    <input id="sBatch" placeholder="e.g. Class 4 or Morning Batch">
+    <label>Start / Joining date</label>
+    <input id="sStart" type="date">
+    <label>Cycle length</label>
+    <select id="sCycle">
+      <option value="30 days">30 days</option>
+      <option value="1 month">1 month</option>
+    </select>
+    <label>Monthly fee</label>
+    <input id="sFee" type="number" placeholder="e.g. 250">
+    <div class="modal-actions">
+      <button class="btn" id="sCancel">Cancel</button>
+      <button class="btn primary" id="sSave">Save student</button>
+    </div>
+  </div>
+</div>
+
+<!-- Attendance -->
+<div id="attendanceOverlay" class="attendance-overlay">
+  <div class="attendance-screen">
+    <div class="attendance-head">
+      <button class="attendance-back" id="attendanceBack" aria-label="Back">‹</button>
+      <div class="attendance-title-wrap">
+        <div class="attendance-title"><span class="attendance-title-icon">✓</span> Attendance</div>
+        <div class="attendance-subtitle">Present, absent &amp; holiday records</div>
+      </div>
+      <div class="attendance-head-spacer"></div>
+    </div>
+    <div class="attendance-body">
+      <div class="attendance-date-card">
+        <div>
+          <div class="attendance-date-label">Attendance Date</div>
+          <div class="attendance-date-hint" id="attendanceDayHint">Today</div>
+        </div>
+        <input id="attendanceDate" type="date" aria-label="Attendance date">
+      </div>
+      <div class="attendance-summary" id="attendanceSummary"></div>
+      <div class="attendance-note" id="attendanceFridayNote" style="display:none;">Friday is the weekly off day. It is marked <b>Holiday</b> automatically.</div>
+      <div class="attendance-list" id="attendanceList"></div>
     </div>
   </div>
 </div>
@@ -811,7 +1068,8 @@ async function loadState(){
     if(!localState.settings.currency) localState.settings.currency = 'INR';
     if(localState.settings.currency === '₹') localState.settings.currency = 'INR';
     localState.settings.dateFormat = 'DMY';
-    (localState.parts||[]).forEach(p=>(p.entries||[]).forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; }));
+    if(!localState.attendance || typeof localState.attendance!=='object') localState.attendance = {};
+    (localState.parts||[]).forEach(p=>(p.entries||[]).forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; if(!e.studentType) e.studentType='personal'; if(e.batchName===undefined) e.batchName=''; }));
   }
 
   if(firebaseUser){
@@ -820,26 +1078,28 @@ async function loadState(){
       const snap = await ref.get();
       if(snap.exists && snap.data() && snap.data().state){
         state = snap.data().state;
+        (state.parts||[]).forEach(p=>(p.entries||[]).forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; if(!e.studentType) e.studentType='personal'; if(e.batchName===undefined) e.batchName=''; }));
       }else{
         // First Google login: migrate any existing local data to the cloud.
-        state = localState || {parts:freshParts(),compact:false,settings:{currency:'INR',dateFormat:'DMY'}};
+        state = localState || {parts:freshParts(),compact:false,settings:{currency:'INR',dateFormat:'DMY'},attendance:{}};
         await ref.set({state, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
       }
       if(!state.settings) state.settings = {currency:'INR', dateFormat:'DMY'};
       if(state.settings.currency === '₹' || !state.settings.currency) state.settings.currency = 'INR';
       state.settings.dateFormat = 'DMY';
+      if(!state.attendance || typeof state.attendance!=='object') state.attendance = {};
       (state.parts||[]).forEach(p=>(p.entries||[]).forEach(e=>{ if(e.paidAmount===undefined) e.paidAmount=null; }));
       try{ await storageAPI.set(STORE_KEY, JSON.stringify(state), false); }catch(e){}
       return;
     }catch(e){
       console.error('Cloud load failed',e);
-      state = localState || {parts:freshParts(),compact:false,settings:{currency:'INR',dateFormat:'DMY'}};
+      state = localState || {parts:freshParts(),compact:false,settings:{currency:'INR',dateFormat:'DMY'},attendance:{}};
       showToast('Cloud data could not load');
       return;
     }
   }
 
-  state = localState || {parts:freshParts(),compact:false,settings:{currency:'₹',dateFormat:'DMY'}};
+  state = localState || {parts:freshParts(),compact:false,settings:{currency:'₹',dateFormat:'DMY'},attendance:{}};
   if(!localState){ try{ await storageAPI.set(STORE_KEY, JSON.stringify(state), false); }catch(e){} }
 }
 async function saveState(){
@@ -1250,7 +1510,6 @@ function renderList(){
     const tbody = document.createElement('tbody');
     visible.forEach(({e,i})=>{
       const tr = document.createElement('tr');
-      if(!e.paid && e.end && isPastDmy(e.end)) tr.classList.add('overdue-row');
       tr.innerHTML = `
         <td>${i+1}</td>
         <td class="name-cell" contenteditable="true" data-field="name">${e.name}</td>
@@ -1270,13 +1529,12 @@ function renderList(){
   }
 
   visible.forEach(({e,i})=>{
-    const overdue = !e.paid && e.end && isPastDmy(e.end);
     const card = document.createElement('div');
-    card.className = 'row-card' + (overdue ? ' overdue' : '');
+    card.className = 'row-card';
     const {outstanding} = moneyLine(e);
     card.innerHTML = `
       <div class="row-top">
-        <div><span class="row-no">${i+1}</span><span class="row-name" contenteditable="true" data-field="name">${e.name}</span>${overdue?'<span class="overdue-flag">Overdue</span>':''}</div>
+        <div><span class="row-no">${i+1}</span><span class="row-name" contenteditable="true" data-field="name">${e.name}</span></div>
         <button class="row-del" data-action="del">✕</button>
       </div>
       <div class="row-grid">
@@ -1414,8 +1672,14 @@ document.getElementById('compactToggle').addEventListener('click', ()=>{
   saveSoon();
   renderList();
 });
-document.getElementById('totalsBtn').addEventListener('click', openTotals);
 document.getElementById('totalsClose').addEventListener('click', ()=> document.getElementById('totalsOverlay').classList.remove('open'));
+
+// All-time totals from the Σ menu
+document.getElementById('sigmaTotals').addEventListener('click', (ev)=>{
+  ev.stopPropagation();
+  sigmaMenu.classList.remove('open');
+  openTotals();
+});
 
 const CURRENCIES = [{"code":"AED","name":"UAE Dirham","symbol":"د.إ"},{"code":"AFN","name":"Afghani","symbol":"AFN"},{"code":"ALL","name":"Lek","symbol":"L"},{"code":"AMD","name":"Armenian Dram","symbol":"֏"},{"code":"ANG","name":"Netherlands Antillean Guilder","symbol":"ANG"},{"code":"AOA","name":"Kwanza","symbol":"AOA"},{"code":"ARS","name":"Argentine Peso","symbol":"$"},{"code":"AUD","name":"Australian Dollar","symbol":"A$"},{"code":"AWG","name":"Aruban Florin","symbol":"AWG"},{"code":"AZN","name":"Azerbaijan Manat","symbol":"₼"},{"code":"BAM","name":"Convertible Mark","symbol":"KM"},{"code":"BBD","name":"Barbados Dollar","symbol":"Bds$"},{"code":"BDT","name":"Taka","symbol":"৳"},{"code":"BGN","name":"Bulgarian Lev","symbol":"лв"},{"code":"BHD","name":"Bahraini Dinar","symbol":".د.ب"},{"code":"BIF","name":"Burundi Franc","symbol":"BIF"},{"code":"BMD","name":"Bermudian Dollar","symbol":"BMD"},{"code":"BND","name":"Brunei Dollar","symbol":"B$"},{"code":"BOB","name":"Boliviano","symbol":"Bs"},{"code":"BOV","name":"Mvdol","symbol":"BOV"},{"code":"BRL","name":"Brazilian Real","symbol":"R$"},{"code":"BSD","name":"Bahamian Dollar","symbol":"B$"},{"code":"BTN","name":"Ngultrum","symbol":"Nu."},{"code":"BWP","name":"Pula","symbol":"P"},{"code":"BYN","name":"Belarusian Ruble","symbol":"Br"},{"code":"BZD","name":"Belize Dollar","symbol":"BZ$"},{"code":"CAD","name":"Canadian Dollar","symbol":"C$"},{"code":"CDF","name":"Congolese Franc","symbol":"CDF"},{"code":"CHE","name":"WIR Euro","symbol":"CHE"},{"code":"CHF","name":"Swiss Franc","symbol":"CHF"},{"code":"CHW","name":"WIR Franc","symbol":"CHW"},{"code":"CLF","name":"Unidad de Fomento","symbol":"CLF"},{"code":"CLP","name":"Chilean Peso","symbol":"$"},{"code":"CNY","name":"Yuan Renminbi","symbol":"¥"},{"code":"COP","name":"Colombian Peso","symbol":"$"},{"code":"COU","name":"Unidad de Valor Real","symbol":"COU"},{"code":"CRC","name":"Costa Rican Colon","symbol":"₡"},{"code":"CUC","name":"Peso Convertible","symbol":"CUC"},{"code":"CUP","name":"Cuban Peso","symbol":"CUP"},{"code":"CVE","name":"Cabo Verde Escudo","symbol":"CVE"},{"code":"CZK","name":"Czech Koruna","symbol":"Kč"},{"code":"DJF","name":"Djibouti Franc","symbol":"DJF"},{"code":"DKK","name":"Danish Krone","symbol":"kr"},{"code":"DOP","name":"Dominican Peso","symbol":"RD$"},{"code":"DZD","name":"Algerian Dinar","symbol":"دج"},{"code":"EGP","name":"Egyptian Pound","symbol":"E£"},{"code":"ERN","name":"Nakfa","symbol":"ERN"},{"code":"ETB","name":"Ethiopian Birr","symbol":"Br"},{"code":"EUR","name":"Euro","symbol":"€"},{"code":"FJD","name":"Fiji Dollar","symbol":"FJ$"},{"code":"FKP","name":"Falkland Islands Pound","symbol":"£"},{"code":"GBP","name":"Pound Sterling","symbol":"£"},{"code":"GEL","name":"Lari","symbol":"₾"},{"code":"GHS","name":"Ghana Cedi","symbol":"₵"},{"code":"GIP","name":"Gibraltar Pound","symbol":"£"},{"code":"GMD","name":"Dalasi","symbol":"GMD"},{"code":"GNF","name":"Guinean Franc","symbol":"GNF"},{"code":"GTQ","name":"Quetzal","symbol":"Q"},{"code":"GYD","name":"Guyana Dollar","symbol":"GYD"},{"code":"HKD","name":"Hong Kong Dollar","symbol":"HK$"},{"code":"HNL","name":"Lempira","symbol":"L"},{"code":"HRK","name":"Kuna","symbol":"kn"},{"code":"HTG","name":"Gourde","symbol":"HTG"},{"code":"HUF","name":"Forint","symbol":"Ft"},{"code":"IDR","name":"Rupiah","symbol":"Rp"},{"code":"ILS","name":"New Israeli Sheqel","symbol":"₪"},{"code":"INR","name":"Indian Rupee","symbol":"₹"},{"code":"IQD","name":"Iraqi Dinar","symbol":"IQD"},{"code":"IRR","name":"Iranian Rial","symbol":"IRR"},{"code":"ISK","name":"Iceland Krona","symbol":"kr"},{"code":"JMD","name":"Jamaican Dollar","symbol":"J$"},{"code":"JOD","name":"Jordanian Dinar","symbol":"د.ا"},{"code":"JPY","name":"Yen","symbol":"¥"},{"code":"KES","name":"Kenyan Shilling","symbol":"KSh"},{"code":"KGS","name":"Som","symbol":"с"},{"code":"KHR","name":"Riel","symbol":"៛"},{"code":"KMF","name":"Comorian Franc","symbol":"KMF"},{"code":"KPW","name":"North Korean Won","symbol":"KPW"},{"code":"KRW","name":"Won","symbol":"₩"},{"code":"KWD","name":"Kuwaiti Dinar","symbol":"د.ك"},{"code":"KYD","name":"Cayman Islands Dollar","symbol":"KYD"},{"code":"KZT","name":"Tenge","symbol":"₸"},{"code":"LAK","name":"Lao Kip","symbol":"₭"},{"code":"LBP","name":"Lebanese Pound","symbol":"ل.ل"},{"code":"LKR","name":"Sri Lanka Rupee","symbol":"Rs"},{"code":"LRD","name":"Liberian Dollar","symbol":"LRD"},{"code":"LSL","name":"Loti","symbol":"LSL"},{"code":"LYD","name":"Libyan Dinar","symbol":"ل.د"},{"code":"MAD","name":"Moroccan Dirham","symbol":"د.م."},{"code":"MDL","name":"Moldovan Leu","symbol":"L"},{"code":"MGA","name":"Malagasy Ariary","symbol":"MGA"},{"code":"MKD","name":"Denar","symbol":"ден"},{"code":"MMK","name":"Kyat","symbol":"K"},{"code":"MNT","name":"Tugrik","symbol":"₮"},{"code":"MOP","name":"Pataca","symbol":"MOP"},{"code":"MRU","name":"Ouguiya","symbol":"MRU"},{"code":"MUR","name":"Mauritius Rupee","symbol":"₨"},{"code":"MVR","name":"Rufiyaa","symbol":"MVR"},{"code":"MWK","name":"Malawi Kwacha","symbol":"MK"},{"code":"MXN","name":"Mexican Peso","symbol":"MX$"},{"code":"MXV","name":"Mexican Unidad de Inversion (UDI)","symbol":"MXV"},{"code":"MYR","name":"Malaysian Ringgit","symbol":"RM"},{"code":"MZN","name":"Mozambique Metical","symbol":"MT"},{"code":"NAD","name":"Namibia Dollar","symbol":"N$"},{"code":"NGN","name":"Naira","symbol":"₦"},{"code":"NIO","name":"Cordoba Oro","symbol":"C$"},{"code":"NOK","name":"Norwegian Krone","symbol":"kr"},{"code":"NPR","name":"Nepalese Rupee","symbol":"₨"},{"code":"NZD","name":"New Zealand Dollar","symbol":"NZ$"},{"code":"OMR","name":"Rial Omani","symbol":"﷼"},{"code":"PAB","name":"Balboa","symbol":"PAB"},{"code":"PEN","name":"Sol","symbol":"S/"},{"code":"PGK","name":"Kina","symbol":"PGK"},{"code":"PHP","name":"Philippine Peso","symbol":"₱"},{"code":"PKR","name":"Pakistan Rupee","symbol":"₨"},{"code":"PLN","name":"Zloty","symbol":"zł"},{"code":"PYG","name":"Guarani","symbol":"₲"},{"code":"QAR","name":"Qatari Rial","symbol":"ر.ق"},{"code":"RON","name":"Romanian Leu","symbol":"lei"},{"code":"RSD","name":"Serbian Dinar","symbol":"дин."},{"code":"RUB","name":"Russian Ruble","symbol":"₽"},{"code":"RWF","name":"Rwanda Franc","symbol":"RF"},{"code":"SAR","name":"Saudi Riyal","symbol":"﷼"},{"code":"SBD","name":"Solomon Islands Dollar","symbol":"SBD"},{"code":"SCR","name":"Seychelles Rupee","symbol":"₨"},{"code":"SDG","name":"Sudanese Pound","symbol":"ج.س."},{"code":"SEK","name":"Swedish Krona","symbol":"kr"},{"code":"SGD","name":"Singapore Dollar","symbol":"S$"},{"code":"SHP","name":"Saint Helena Pound","symbol":"£"},{"code":"SLE","name":"Leone","symbol":"SLE"},{"code":"SLL","name":"Leone","symbol":"SLL"},{"code":"SOS","name":"Somali Shilling","symbol":"SOS"},{"code":"SRD","name":"Surinam Dollar","symbol":"SRD"},{"code":"SSP","name":"South Sudanese Pound","symbol":"SSP"},{"code":"STN","name":"Dobra","symbol":"STN"},{"code":"SVC","name":"El Salvador Colon","symbol":"SVC"},{"code":"SYP","name":"Syrian Pound","symbol":"SYP"},{"code":"SZL","name":"Lilangeni","symbol":"SZL"},{"code":"THB","name":"Baht","symbol":"฿"},{"code":"TJS","name":"Somoni","symbol":"TJS"},{"code":"TMT","name":"Turkmenistan New Manat","symbol":"TMT"},{"code":"TND","name":"Tunisian Dinar","symbol":"د.ت"},{"code":"TOP","name":"Pa’anga","symbol":"TOP"},{"code":"TRY","name":"Turkish Lira","symbol":"₺"},{"code":"TTD","name":"Trinidad and Tobago Dollar","symbol":"TT$"},{"code":"TWD","name":"New Taiwan Dollar","symbol":"NT$"},{"code":"TZS","name":"Tanzanian Shilling","symbol":"TSh"},{"code":"UAH","name":"Hryvnia","symbol":"₴"},{"code":"UGX","name":"Uganda Shilling","symbol":"USh"},{"code":"USD","name":"US Dollar","symbol":"$"},{"code":"USN","name":"US Dollar (Next day)","symbol":"USN"},{"code":"UYI","name":"Uruguay Peso en Unidades Indexadas (UI)","symbol":"UYI"},{"code":"UYU","name":"Peso Uruguayo","symbol":"$U"},{"code":"UYW","name":"Unidad Previsional","symbol":"UYW"},{"code":"UZS","name":"Uzbekistan Sum","symbol":"лв"},{"code":"VED","name":"Bolívar Soberano","symbol":"VED"},{"code":"VES","name":"Bolívar Soberano","symbol":"VES"},{"code":"VND","name":"Dong","symbol":"₫"},{"code":"VUV","name":"Vatu","symbol":"VUV"},{"code":"WST","name":"Tala","symbol":"WST"},{"code":"XAF","name":"CFA Franc BEAC","symbol":"FCFA"},{"code":"XAG","name":"Silver","symbol":"XAG"},{"code":"XAU","name":"Gold","symbol":"XAU"},{"code":"XBA","name":"Bond Markets Unit European Composite Unit (EURCO)","symbol":"XBA"},{"code":"XBB","name":"Bond Markets Unit European Monetary Unit (E.M.U.-6)","symbol":"XBB"},{"code":"XBC","name":"Bond Markets Unit European Unit of Account 9 (E.U.A.-9)","symbol":"XBC"},{"code":"XBD","name":"Bond Markets Unit European Unit of Account 17 (E.U.A.-17)","symbol":"XBD"},{"code":"XCD","name":"East Caribbean Dollar","symbol":"EC$"},{"code":"XDR","name":"SDR (Special Drawing Right)","symbol":"XDR"},{"code":"XOF","name":"CFA Franc BCEAO","symbol":"CFA"},{"code":"XPD","name":"Palladium","symbol":"XPD"},{"code":"XPF","name":"CFP Franc","symbol":"₣"},{"code":"XPT","name":"Platinum","symbol":"XPT"},{"code":"XSU","name":"Sucre","symbol":"XSU"},{"code":"XTS","name":"Codes specifically reserved for testing purposes","symbol":"XTS"},{"code":"XUA","name":"ADB Unit of Account","symbol":"XUA"},{"code":"XXX","name":"The codes assigned for transactions where no currency is involved","symbol":"¤"},{"code":"YER","name":"Yemeni Rial","symbol":"YER"},{"code":"ZAR","name":"Rand","symbol":"R"},{"code":"ZMW","name":"Zambian Kwacha","symbol":"ZK"},{"code":"ZWL","name":"Zimbabwe Dollar","symbol":"ZWL"}];
 
@@ -1598,6 +1862,269 @@ document.getElementById('ptSave').addEventListener('click', ()=>{
   showToast(`Created ${label}`);
 });
 
+
+
+/* ---------------- Students ---------------- */
+const studentsOverlay = document.getElementById('studentsOverlay');
+const studentDetail = document.getElementById('studentDetail');
+const studentListEl = document.getElementById('studentsList');
+const studentsSearchEl = document.getElementById('studentsSearch');
+const studentsFilterRow = document.getElementById('studentsFilterRow');
+const studentFormOverlay = document.getElementById('studentFormOverlay');
+let studentsFilter = 'all';
+let selectedStudentRef = null;
+
+function allStudentRefs(){
+  const out=[];
+  state.parts.forEach((part,pi)=>{
+    (part.entries||[]).forEach((e,ei)=>out.push({e,part,pi,ei}));
+  });
+  return out;
+}
+function studentType(e){
+  return e.studentType === 'batch' ? 'batch' : 'personal';
+}
+function studentTypeLabel(e){
+  const t=studentType(e);
+  const b=(e.batchName||e.studentBatch||'').trim();
+  return b ? `${t==='batch'?'Batch':'Personal'} • ${b}` : (t==='batch'?'Batch':'Personal');
+}
+function studentInitials(name){
+  const parts=String(name||'?').trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return '?';
+  return parts.length===1 ? parts[0].slice(0,2).toUpperCase() : (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
+}
+function studentSearchRender(){
+  const q=(studentsSearchEl.value||'').trim().toLowerCase();
+  const refs=allStudentRefs().filter(r=>{
+    const okFilter=studentsFilter==='all'||studentType(r.e)===studentsFilter;
+    const okSearch=!q||String(r.e.name||'').toLowerCase().includes(q);
+    return okFilter&&okSearch;
+  });
+  if(!refs.length){
+    studentListEl.innerHTML='<div class="students-empty"><strong>No students found</strong>Add a student using the ＋ button.</div>';
+    return;
+  }
+  studentListEl.innerHTML='';
+  refs.forEach(r=>{
+    const e=r.e;
+    const card=document.createElement('div');
+    const typ=studentType(e);
+    card.className=`student-card ${typ} ${e.paid?'paid':'pending'}`;
+    const fee=e.fee==null?'—':`${cur()}${e.fee}`;
+    const status=e.paid?`<span class="student-paid">✓ Paid</span>`:`<span class="student-pending">Pending</span>`;
+    card.innerHTML=`
+      <div class="student-accent"></div>
+      <div class="student-avatar">${esc(studentInitials(e.name))}</div>
+      <div class="student-main">
+        <div class="student-name-line"><div class="student-name">${esc(e.name||'Unnamed')}</div>${status}</div>
+        ${(e.studentType||'personal')==='batch' ? `<div class="student-type">${esc(studentTypeLabel(e))}</div>` : ''}
+      </div>
+      <div class="student-view">View Details <span class="chev">›</span></div>`;
+    card.addEventListener('click',()=>openStudentDetail(r));
+    studentListEl.appendChild(card);
+  });
+}
+function openStudents(){
+  sigmaMenu.classList.remove('open');
+  studentsOverlay.classList.add('open');
+  studentsSearchEl.value='';
+  studentsFilter='all';
+  studentsFilterRow.classList.remove('open');
+  document.querySelectorAll('.students-filter-chip').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));
+  studentSearchRender();
+}
+function closeStudents(){studentsOverlay.classList.remove('open');}
+document.getElementById('sigmaStudents').addEventListener('click',openStudents);
+document.getElementById('studentsMenuBtn').addEventListener('click',closeStudents);
+studentsSearchEl.addEventListener('input',studentSearchRender);
+document.getElementById('studentsFilterBtn').addEventListener('click',()=>studentsFilterRow.classList.toggle('open'));
+document.querySelectorAll('.students-filter-chip').forEach(btn=>btn.addEventListener('click',()=>{
+  studentsFilter=btn.dataset.filter;
+  document.querySelectorAll('.students-filter-chip').forEach(b=>b.classList.toggle('active',b===btn));
+  studentSearchRender();
+}));
+
+function openStudentForm(ref=null){
+  selectedStudentRef=ref;
+  document.getElementById('studentFormTitle').textContent=ref?'Edit student':'Add student';
+  document.getElementById('sName').value=ref?.e?.name||'';
+  document.getElementById('sType').value=ref?studentType(ref.e):'personal';
+  document.getElementById('sBatch').value=ref?.e?.batchName||'';
+  document.getElementById('sStart').value=ref?.e?.start?dmyToIso(ref.e.start):'';
+  document.getElementById('sCycle').value=ref?.e?.cycle||'30 days';
+  document.getElementById('sFee').value=ref?.e?.fee??'';
+  studentFormOverlay.classList.add('open');
+}
+function saveStudentForm(){
+  const name=document.getElementById('sName').value.trim();
+  const startIso=document.getElementById('sStart').value;
+  const type=document.getElementById('sType').value;
+  const batchName=document.getElementById('sBatch').value.trim();
+  const cycle=document.getElementById('sCycle').value;
+  const feeVal=document.getElementById('sFee').value;
+  if(!name||!startIso){showToast('Name and joining date are required');return;}
+  const start=isoToDmy(startIso), end=addToDate(start,cycle), fee=feeVal===''?null:parseFloat(feeVal);
+  if(selectedStudentRef){
+    const e=selectedStudentRef.e;
+    e.name=name;e.studentType=type;e.batchName=batchName;e.start=start;e.cycle=cycle;e.end=end;e.fee=fee;
+  }else{
+    const part=state.parts[currentPartIdx];
+    const e=E(name,start,cycle,end,fee,false,'');
+    e.studentType=type;e.batchName=batchName;
+    part.entries.push(e);
+  }
+  saveSoon();
+  studentFormOverlay.classList.remove('open');
+  studentSearchRender();
+  showToast(selectedStudentRef?`Updated ${name}`:`Added ${name}`);
+  selectedStudentRef=null;
+}
+document.getElementById('studentsAddTop').addEventListener('click',()=>openStudentForm());
+document.getElementById('sCancel').addEventListener('click',()=>studentFormOverlay.classList.remove('open'));
+document.getElementById('sSave').addEventListener('click',saveStudentForm);
+
+function openStudentDetail(ref){
+  selectedStudentRef=ref;
+  const e=ref.e;
+  studentsOverlay.classList.remove('open');
+  studentDetail.classList.add('open');
+  document.getElementById('studentDetailTitle').textContent="Student's Details";
+  const fee=e.fee==null?'—':`${cur()}${e.fee}`;
+  const joining=e.start||'—';
+  const end=e.end||'—';
+  const paid=e.paid?`${cur()}${e.paidAmount||e.fee||0}`:`${cur()}0`;
+  const due=e.fee==null?'—':`${cur()}${Math.max(0,(e.fee||0)-(e.paidAmount||0))}`;
+  document.getElementById('studentDetailBody').innerHTML=`
+    <div class="student-profile-card">
+      <div class="student-detail-avatar">${esc(studentInitials(e.name))}</div>
+      <div class="student-detail-name">${esc(e.name||'Unnamed')}</div>
+      <div class="student-detail-badge">♙ ${esc(studentTypeLabel(e))}</div>
+      <div class="student-stats">
+        <div class="student-stat"><div class="student-stat-label">Monthly Fees</div><div class="student-stat-value">${fee}</div></div>
+        <div class="student-stat"><div class="student-stat-label">Schedule</div><div class="student-stat-value">${esc(e.schedule||'Mon, Tue, Wed,...')}</div></div>
+        <div class="student-stat"><div class="student-stat-label">Joining Date</div><div class="student-stat-value">${esc(joining)}</div></div>
+      </div>
+    </div>
+    <div class="student-tabs">
+      <button class="student-tab active" data-tab="overview">▦ Overview</button>
+      <button class="student-tab" data-tab="attendance">▥ Attendance</button>
+      <button class="student-tab" data-tab="postponed">◷ Postponed Classes</button>
+    </div>
+    <div class="student-feature-title">Features</div>
+    <div class="student-feature-card" id="studentPaymentFeature"><div class="student-feature-icon">▣</div><div class="student-feature-text"><b>Payment</b><span>View history &amp; pay dues • Due ${due}</span></div><div class="student-feature-chevron">›</div></div>
+    <div class="student-feature-card" id="studentAttendanceFeature"><div class="student-feature-icon att">✓</div><div class="student-feature-text"><b>Attendance</b><span>Mark / View log history</span></div><div class="student-feature-chevron">›</div></div>
+    <div class="student-feature-card" id="studentChangeFeature"><div class="student-feature-icon" style="background:#F5EFFD;color:#8B5CF6;">⇄</div><div class="student-feature-text"><b>Change Batch</b><span>Transfer batch / personal</span></div><div class="student-feature-chevron">›</div></div>
+  `;
+  document.querySelectorAll('.student-tab').forEach(tab=>tab.addEventListener('click',()=>{
+    document.querySelectorAll('.student-tab').forEach(t=>t.classList.toggle('active',t===tab));
+    if(tab.dataset.tab==='attendance') openAttendance();
+  }));
+  document.getElementById('studentAttendanceFeature').addEventListener('click',openAttendance);
+  document.getElementById('studentSettings').onclick=()=>openStudentForm(selectedStudentRef);
+  document.getElementById('studentChangeFeature').addEventListener('click',()=>{
+    const next=studentType(e)==='personal'?'batch':'personal';
+    e.studentType=next;saveSoon();openStudentDetail(ref);showToast(`Changed to ${next}`);
+  });
+}
+document.getElementById('studentDetailBack').addEventListener('click',()=>{
+  studentDetail.classList.remove('open');studentsOverlay.classList.add('open');studentSearchRender();
+});
+
+/* ---------------- Attendance ---------------- */
+const attendanceOverlay = document.getElementById('attendanceOverlay');
+const attendanceDateEl = document.getElementById('attendanceDate');
+const attendanceListEl = document.getElementById('attendanceList');
+const attendanceSummaryEl = document.getElementById('attendanceSummary');
+const attendanceDayHintEl = document.getElementById('attendanceDayHint');
+const attendanceFridayNoteEl = document.getElementById('attendanceFridayNote');
+
+function attendanceIsoToday(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function attendanceDmyFromIso(iso){ return isoToDmy(iso); }
+function attendanceStore(){ if(!state.attendance || typeof state.attendance!=='object') state.attendance={}; return state.attendance; }
+function attendanceIsFriday(iso){
+  if(!iso) return false;
+  const d=new Date(iso+'T00:00:00');
+  return d.getDay()===5;
+}
+function attendanceStatusFor(entryId, iso){
+  const store=attendanceStore();
+  const day=store[iso] || {};
+  return day[entryId] || (attendanceIsFriday(iso)?'holiday':'');
+}
+function setAttendanceStatus(entryId, iso, status){
+  const store=attendanceStore();
+  if(!store[iso]) store[iso]={};
+  store[iso][entryId]=status;
+  saveSoon();
+  renderAttendance();
+}
+function renderAttendance(){
+  if(!state) return;
+  const iso=attendanceDateEl.value || attendanceIsoToday();
+  if(attendanceDateEl.value!==iso) attendanceDateEl.value=iso;
+  const d=new Date(iso+'T00:00:00');
+  const dayName=d.toLocaleDateString([], {weekday:'long'});
+  attendanceDayHintEl.textContent=`${dayName} • ${attendanceDmyFromIso(iso)}`;
+  const friday=attendanceIsFriday(iso);
+  attendanceFridayNoteEl.style.display=friday?'block':'none';
+
+  const part=state.parts[currentPartIdx];
+  const entries=(part && part.entries)||[];
+  let present=0,absent=0,holiday=0;
+  entries.forEach(e=>{const st=attendanceStatusFor(e.id,iso); if(st==='present')present++; else if(st==='absent')absent++; else if(st==='holiday')holiday++;});
+  attendanceSummaryEl.innerHTML=`
+    <div class="attendance-count present"><div class="n">${present}</div><div class="l">Present</div></div>
+    <div class="attendance-count absent"><div class="n">${absent}</div><div class="l">Absent</div></div>
+    <div class="attendance-count holiday"><div class="n">${holiday}</div><div class="l">Holiday</div></div>`;
+
+  attendanceListEl.innerHTML='';
+  if(!entries.length){
+    attendanceListEl.innerHTML='<div class="attendance-empty">No students in this part yet.</div>';
+    return;
+  }
+  entries.forEach((e,i)=>{
+    const st=attendanceStatusFor(e.id,iso);
+    const row=document.createElement('div');
+    row.className='attendance-row';
+    row.innerHTML=`
+      <div class="attendance-row-top">
+        <div class="attendance-no">${i+1}</div>
+        <div class="attendance-name">${esc(e.name||'Unnamed')}</div>
+        <div class="attendance-current ${st||'unmarked'}">${st?st.charAt(0).toUpperCase()+st.slice(1):'Not marked'}</div>
+      </div>
+      <div class="attendance-actions">
+        <button class="attendance-btn present ${st==='present'?'active':''}" data-status="present">✓ Present</button>
+        <button class="attendance-btn absent ${st==='absent'?'active':''}" data-status="absent">✕ Absent</button>
+        <button class="attendance-btn holiday ${st==='holiday'?'active':''}" data-status="holiday">● Holiday</button>
+      </div>`;
+    row.querySelectorAll('.attendance-btn').forEach(btn=>btn.addEventListener('click',()=>setAttendanceStatus(e.id,iso,btn.dataset.status)));
+    attendanceListEl.appendChild(row);
+  });
+}
+function openAttendance(){
+  sigmaMenu.classList.remove('open');
+  attendanceOverlay.classList.add('open');
+  attendanceDateEl.value=attendanceIsoToday();
+  renderAttendance();
+}
+document.getElementById('sigmaAttendance').addEventListener('click',openAttendance);
+document.getElementById('attendanceBack').addEventListener('click',()=>attendanceOverlay.classList.remove('open'));
+attendanceDateEl.addEventListener('change',renderAttendance);
+
+const sigmaMenu = document.getElementById('sigmaMenu');
+
+document.getElementById('totalsBtn').addEventListener('click',(ev)=>{
+  ev.stopPropagation();
+  sigmaMenu.classList.toggle('open');
+});
+sigmaMenu.addEventListener('click',ev=>ev.stopPropagation());
+document.addEventListener('click',()=>sigmaMenu.classList.remove('open'));
+
+
 /* ---------------- CSV export ---------------- */
 function csvEscape(v){
   const s = String(v ?? '');
@@ -1703,7 +2230,7 @@ function pdfReportHtml(part, pageNo, pageCount){
             <circle cx="12" cy="8" r="4"/>
             <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
           </svg>
-          <div><p class="tf-pdf-meta-label">Educator</p><p class="tf-pdf-meta-value">${esc(pdfEducatorName())}</p></div>
+          <div><p class="tf-pdf-meta-label">Teacher</p><p class="tf-pdf-meta-value">${esc(pdfTeacherName())}</p></div>
         </div>
         <div class="tf-pdf-meta-item">
           <svg class="tf-pdf-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -1757,7 +2284,7 @@ function pdfReportHtml(part, pageNo, pageCount){
   </div>`;
 }
 
-function pdfEducatorName(){
+function pdfTeacherName(){
   const p = window.__tuitionPdfProfile || {};
   return p.name || p.displayName || p.email || 'Teacher';
 }
