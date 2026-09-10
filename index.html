@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+html, body { touch-action: pan-y; overscroll-behavior-x: none; }
+
   :root{
     --paper:#F4EFE2;
     --paper-raised:#FBF8F0;
@@ -541,46 +543,45 @@
   .students-overlay{position:fixed;inset:0;z-index:97;display:none;background:#F3F3F8;color:#111;overflow:hidden;}
   .students-overlay.open{display:block;}
   .students-screen{width:100%;height:100%;max-width:480px;margin:0 auto;background:#F3F3F8;overflow:auto;padding-bottom:28px;}
-  .students-head{position:sticky;top:0;z-index:12;background:#fff;border-bottom:1px solid #E1E1E6;min-height:86px;padding:12px 12px 10px;display:grid;grid-template-columns:44px minmax(0,1fr) 150px;align-items:center;column-gap:6px;box-sizing:border-box;}
-  .students-menu-btn,.students-back-btn{border:0;background:none;color:#0B347D;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .students-menu-btn{font-size:31px;line-height:1;}
+  .students-head{position:sticky;top:0;z-index:12;background:rgba(255,255,255,.98);border-bottom:1px solid #E5E7EB;min-height:92px;padding:12px 14px 11px;display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;column-gap:10px;box-sizing:border-box;}
+  .students-menu-btn,.students-back-btn{border:0;background:#F5F7FA;color:#0B347D;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .students-menu-btn{width:40px;height:40px;border-radius:13px;font-size:28px;line-height:1;box-shadow:0 1px 4px rgba(20,25,40,.06);}
   .students-back-btn{font-size:46px;line-height:1;width:44px;height:44px;}
-  .students-title-wrap{text-align:center;min-width:0;}
-  .students-title{font-size:25px;font-weight:800;line-height:1.1;color:#111;white-space:nowrap;overflow:hidden;text-overflow:clip;}
-  .students-title-icon{color:#0B347D;margin-right:6px;font-size:24px;}
-  .students-subtitle{font-size:12.5px;color:#8A8A8F;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:clip;}
-  .students-add-top{width:150px;height:64px;padding:0 10px;border-radius:18px;border:2px solid #BFD6F6;background:#EEF5FF;color:#3279DE;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;font-weight:800;line-height:1.05;box-sizing:border-box;justify-self:end}.students-add-top .add-plus{font-size:38px;font-weight:400;line-height:1}.students-add-top .add-label{font-size:16px;text-align:center;line-height:1.05;white-space:nowrap}
-  @media(max-width:390px){.students-head{grid-template-columns:40px minmax(0,1fr) 132px;padding-left:8px;padding-right:8px;}.students-add-top{width:132px;height:60px;}.students-add-top .add-plus{font-size:34px}.students-add-top .add-label{font-size:14px}.students-title{font-size:23px}.students-subtitle{font-size:11.5px;}}
+  .students-title-wrap{text-align:left;min-width:0;}
+  .students-title{font-size:25px;font-weight:850;line-height:1.08;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .students-title-icon{color:#0B347D;margin-right:5px;font-size:23px;}
+  .students-subtitle{font-size:12px;color:#8A8A8F;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .students-add-top{width:116px;height:48px;padding:0 9px;border-radius:15px;border:1.5px solid #BFD6F6;background:#F1F7FF;color:#246FD2;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;font-weight:800;line-height:1;box-sizing:border-box;justify-self:end;box-shadow:0 2px 5px rgba(50,121,222,.08);}
+  .students-add-top .add-plus{font-size:28px;font-weight:400;line-height:1;}
+  .students-add-top .add-label{font-size:12.5px;text-align:center;line-height:1;white-space:nowrap;}
+  @media(max-width:480px){
+  .attendance-profile-stats.three{grid-template-columns:1fr 1.28fr 1.32fr !important;gap:3px !important;}
+  .attendance-profile-stats.three .attendance-profile-stat{min-width:0;padding:0 3px;}
+  .attendance-profile-stats.three .schedule-stat .student-schedule-days{gap:1px !important;}
+  .attendance-profile-stats.three .schedule-stat .student-day{font-size:8px !important;min-width:0 !important;width:27px !important;padding:5px 1px !important;}
+  .attendance-profile-stats.three .schedule-stat .student-schedule-note{font-size:9px !important;}
+}
+@media(max-width:390px){.students-head{grid-template-columns:38px minmax(0,1fr) 106px;padding-left:9px;padding-right:9px;column-gap:7px;}.students-menu-btn{width:36px;height:36px;font-size:25px}.students-add-top{width:106px;height:44px;}.students-add-top .add-plus{font-size:25px}.students-add-top .add-label{font-size:11.5px}.students-title{font-size:22px}.students-subtitle{font-size:11px;}}
   .students-body{padding:14px;}
-  .students-tools{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:12px;margin-bottom:14px;}
-  .students-search,.students-filter-btn{height:64px;background:#fff;border:1px solid #E1E1E6;border-radius:18px;box-shadow:0 3px 8px rgba(20,25,40,.05);display:flex;align-items:center;}
-  .students-search{padding:0 16px;gap:12px;}
-  .students-search-icon{font-size:29px;color:#A5A5AA;line-height:1;}
-  .students-search input{border:0;outline:0;width:100%;font-size:17px;background:transparent;color:#111;}
-  .students-search input::placeholder{color:#C4C4C8;}
-  .students-filter-btn{padding:0 15px;gap:9px;justify-content:center;color:#85858A;font-size:15px;font-weight:700;cursor:pointer;}
-  .students-filter-icon{font-size:22px;}
-  .students-filter-row{display:none;background:#fff;border:1px solid #E1E1E6;border-radius:16px;padding:8px;margin:-4px 0 12px;gap:8px;}
-  .students-filter-row.open{display:grid;grid-template-columns:repeat(3,1fr);}
-  .students-filter-chip{border:1px solid #E0E3E8;background:#fff;border-radius:12px;min-height:40px;font-size:12px;font-weight:800;color:#777;cursor:pointer;}
-  .students-filter-chip.active{background:#EEF5FF;color:#0B347D;border-color:#BFD6F6;}
-  .students-list{display:flex;flex-direction:column;gap:12px;}
-  .student-card{background:#fff;border:1px solid #E1E1E6;border-radius:22px;box-shadow:0 3px 8px rgba(20,25,40,.08);padding:14px 14px 14px 0;display:grid;grid-template-columns:5px 66px minmax(0,1fr) auto;gap:12px;align-items:center;cursor:pointer;overflow:hidden;}
-  .student-card.personal{border-left-color:#8B5CF6;}
-  .student-card.batch{border-left-color:#2F7DE1;}
-  .student-accent{width:5px;height:100%;min-height:112px;background:#36C46D;}
-  .student-card.pending .student-accent{background:#F0A33A;}
-  .student-avatar{width:62px;height:62px;border-radius:50%;background:#8B5CF6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:800;flex:0 0 auto;}
-  .student-card.batch .student-avatar{background:#347BE5;}
+  .students-tools{display:block;margin-bottom:14px;}
+  .students-count{font-size:12px;color:#8A8A8F;margin:7px 2px 0;text-align:right;}
+  .students-search{height:54px;background:#fff;border:1px solid #E1E1E6;border-radius:17px;box-shadow:0 3px 8px rgba(20,25,40,.05);display:flex;align-items:center;padding:0 15px;gap:10px;}
+  .students-search-icon{font-size:27px;color:#8D98A8;line-height:1;}
+  .students-search input{border:0;outline:0;width:100%;font-size:16px;background:transparent;color:#111;}
+  .students-search input::placeholder{color:#AEB5C0;}
+  .students-filter-btn,.students-filter-row{display:none!important;}
+  .students-list{display:flex;flex-direction:column;gap:11px;}
+  .student-card{background:#fff;border:1px solid #E1E5EB;border-radius:19px;box-shadow:0 3px 9px rgba(20,25,40,.07);padding:13px 12px 13px 0;display:grid;grid-template-columns:4px 28px 58px minmax(0,1fr) auto;gap:9px;align-items:center;cursor:pointer;overflow:hidden;min-height:88px;transition:transform .12s ease,box-shadow .12s ease;}
+  .student-card:active{transform:scale(.992);box-shadow:0 2px 5px rgba(20,25,40,.06);}
+  .student-accent{width:4px;height:100%;min-height:72px;background:#7B61FF;}
+  .student-number{font-size:13px;font-weight:800;color:#8A8A8F;text-align:center;}
+  .student-avatar{width:56px;height:56px;border-radius:17px;background:#7B61FF;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex:0 0 auto;}
   .student-main{min-width:0;}
-  .student-name-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
-  .student-name{font-size:20px;font-weight:800;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .student-paid{border:2px solid #3BC56C;color:#28B95D;background:#F3FFF7;border-radius:12px;padding:3px 8px;font-size:11px;font-weight:800;white-space:nowrap;}
-  .student-pending{border:2px solid #E5A33E;color:#C98112;background:#FFF9EC;border-radius:12px;padding:3px 8px;font-size:11px;font-weight:800;white-space:nowrap;}
-  .student-type{display:inline-block;margin-top:8px;padding:5px 11px;border:2px solid #D8C6FA;background:#FAF6FF;color:#8B5CF6;border-radius:11px;font-size:13px;font-weight:800;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .student-card.batch .student-type{border-color:#BFD6F6;background:#F1F7FF;color:#0B5FB7;}
-  .student-view{color:#0B347D;font-size:15px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:3px;padding-right:4px;}
-  .student-view .chev{font-size:28px;font-weight:400;line-height:1;}
+  .student-name-line{display:flex;align-items:center;min-width:0;}
+  .student-name{font-size:18px;font-weight:800;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .student-paid,.student-pending,.student-type{display:none!important;}
+  .student-view{color:#0B347D;font-size:13px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:4px;padding-right:2px;background:#F2F6FC;border-radius:12px;padding:8px 9px;}
+  .student-view .chev{font-size:24px;font-weight:400;line-height:1;}
   .students-empty{background:#fff;border:1px dashed #D5D8DF;border-radius:20px;padding:42px 20px;text-align:center;color:#8A8A8F;font-size:14px;}
   .students-empty strong{display:block;color:#111;font-size:19px;margin-bottom:5px;}
   .student-detail{position:fixed;inset:0;z-index:98;display:none;background:#F3F3F8;color:#111;overflow:hidden;}
@@ -589,15 +590,22 @@
   .student-detail-head{position:sticky;top:0;z-index:12;background:#fff;border-bottom:1px solid #E1E1E6;min-height:72px;padding:10px 14px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;}
   .student-detail-title{text-align:center;font-size:21px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .student-settings{border:0;background:none;color:#0B347D;font-size:29px;cursor:pointer;}
-  .student-profile-card{margin:14px;background:#fff;border:1px solid #E1E1E6;border-radius:22px;padding:22px 18px 18px;box-shadow:0 3px 9px rgba(20,25,40,.08);text-align:center;}
-  .student-detail-avatar{width:90px;height:90px;border-radius:50%;margin:0 auto 12px;background:#347BE5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:31px;font-weight:800;}
-  .student-detail-name{font-size:30px;font-weight:800;}
-  .student-detail-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;border:2px solid #C9D5E7;background:#F4F7FC;color:#0B347D;border-radius:22px;padding:7px 14px;font-size:15px;font-weight:800;}
-  .student-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:20px;padding-top:18px;border-top:1px solid #E9E9EC;gap:8px;}
-  .student-stat{min-width:0;}
+  .student-profile-card{margin:12px;background:#fff;border:1px solid #E1E1E6;border-radius:20px;padding:16px 14px 14px;box-shadow:0 3px 9px rgba(20,25,40,.08);text-align:center;}
+  .student-detail-avatar{width:76px;height:76px;border-radius:50%;margin:0 auto 9px;background:#347BE5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:800;}
+  .student-detail-name{font-size:25px;font-weight:800;}
+  .student-detail-badge{display:inline-flex;align-items:center;gap:6px;margin-top:7px;border:2px solid #C9D5E7;background:#F4F7FC;color:#0B347D;border-radius:22px;padding:5px 11px;font-size:13px;font-weight:800;}
+  .student-stats{display:grid;grid-template-columns:1fr 1.55fr 1.2fr;margin-top:14px;padding-top:13px;border-top:1px solid #E9E9EC;gap:0;}
+  .student-stat{min-width:0;text-align:center;padding:0 5px;box-sizing:border-box;}
   .student-stat+.student-stat{border-left:1px solid #E5E5E8;}
-  .student-stat-label{font-size:12px;color:#8A8A8F;font-weight:700;}
-  .student-stat-value{font-size:17px;font-weight:800;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .student-stat-label{font-size:10px;color:#8A8A8F;font-weight:700;white-space:nowrap;}
+  .student-stat-value{font-size:12px;font-weight:800;margin-top:5px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2;word-break:keep-all;}
+  .student-schedule-days{display:flex;justify-content:space-between;align-items:center;gap:2px;flex-wrap:nowrap;width:100%;margin-top:5px;}
+  .student-day{display:inline-flex;flex:1 1 0;min-width:0;max-width:30px;height:20px;padding:0 1px;align-items:center;justify-content:center;border-radius:6px;background:#E6F7F0;color:#08744D;font-size:8px;font-weight:800;box-sizing:border-box;}
+  .student-day.friday{background:#FDE7E7;color:#C73737;}
+  .student-schedule-note{display:block;margin-top:3px;color:#C73737;font-size:8px;font-weight:800;}
+  .student-joining-date{display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;font-size:11px;font-weight:800;min-width:0;}
+  .student-joining-date .cal{font-size:12px;line-height:1;}
+  @media (max-width:380px){.student-day{min-width:20px;font-size:8px;padding:0 2px}.student-joining-date{font-size:11px}.student-stat-label{font-size:10px}.student-stat-value{font-size:12px}}
   .student-tabs{display:grid;grid-template-columns:repeat(3,1fr);margin:0 14px 18px;background:#E8EBF2;border-radius:18px;padding:4px;}
   .student-tab{border:0;background:transparent;color:#96979D;min-height:50px;border-radius:15px;font-size:13px;font-weight:800;cursor:pointer;}
   .student-tab.active{background:#0B347D;color:#fff;box-shadow:0 2px 5px rgba(11,52,125,.2);}
@@ -618,50 +626,106 @@
     .student-view{font-size:12px;}
   }
 
-  /* Attendance */
-  .attendance-overlay{position:fixed;inset:0;z-index:96;display:none;background:#F3F3F8;color:#111;overflow:hidden;}
-  .attendance-overlay.open{display:block;}
-  .attendance-screen{width:100%;height:100%;max-width:480px;margin:0 auto;background:#F3F3F8;overflow:auto;padding-bottom:28px;}
-  .attendance-head{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #E1E1E6;min-height:84px;padding:14px 14px 12px;display:grid;grid-template-columns:42px 1fr 42px;align-items:center;}
-  .attendance-back{border:0;background:none;font-size:46px;line-height:1;color:#0B347D;width:42px;height:42px;padding:0;cursor:pointer;}
-  .attendance-title-wrap{text-align:center;min-width:0;}
-  .attendance-title{font-size:22px;font-weight:800;white-space:nowrap;}
-  .attendance-title-icon{display:inline-flex;width:27px;height:27px;border-radius:50%;align-items:center;justify-content:center;background:#0A347D;color:#fff;font-size:17px;vertical-align:2px;margin-right:6px;}
-  .attendance-subtitle{font-size:12.5px;color:#8A8A8F;margin-top:5px;white-space:nowrap;}
-  .attendance-head-spacer{width:42px;}
-  .attendance-body{padding:14px;}
-  .attendance-date-card{background:#fff;border:1px solid #E1E1E6;border-radius:18px;padding:14px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 3px 8px rgba(20,25,40,.06);}
-  .attendance-date-label{font-size:12px;color:#8A8A8F;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
-  .attendance-date-hint{font-size:18px;font-weight:800;margin-top:3px;color:#111;}
-  .attendance-date-card input{border:1px solid #DDE2EA;border-radius:12px;background:#F8FAFD;color:#102B63;padding:10px 9px;font:700 14px 'Inter',sans-serif;min-width:146px;}
-  .attendance-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
-  .attendance-count{background:#fff;border:1px solid #E1E1E6;border-radius:15px;padding:11px 8px;text-align:center;}
-  .attendance-count .n{font-size:20px;font-weight:800;line-height:1;}
-  .attendance-count .l{font-size:10px;font-weight:800;color:#8A8A8F;text-transform:uppercase;margin-top:5px;}
-  .attendance-count.present .n{color:#16A36F;}
-  .attendance-count.absent .n{color:#D84848;}
-  .attendance-count.holiday .n{color:#2376D8;}
-  .attendance-note{margin-top:10px;background:#EAF3FF;border:1px solid #CFE3FA;color:#175EA8;border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.45;}
-  .attendance-list{margin-top:12px;display:flex;flex-direction:column;gap:10px;}
-  .attendance-row{background:#fff;border:1px solid #E1E1E6;border-radius:18px;padding:14px;box-shadow:0 3px 8px rgba(20,25,40,.06);}
-  .attendance-row-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-  .attendance-no{width:34px;height:34px;border-radius:10px;background:#F1F4F8;color:#8A8A8F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:0 0 auto;}
-  .attendance-name{font-size:16px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .attendance-current{margin-left:auto;font-size:11px;font-weight:800;padding:5px 8px;border-radius:10px;white-space:nowrap;}
-  .attendance-current.present{background:#E5F7EF;color:#12875E;}
-  .attendance-current.absent{background:#FDEAEA;color:#C23C3C;}
-  .attendance-current.holiday{background:#E7F1FF;color:#1766B4;}
-  .attendance-current.unmarked{background:#F2F2F4;color:#8A8A8F;}
-  .attendance-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-  .attendance-btn{border:1px solid #E0E3E8;background:#fff;border-radius:12px;min-height:44px;font-size:13px;font-weight:800;cursor:pointer;}
-  .attendance-btn.present{color:#159567;}
-  .attendance-btn.absent{color:#D84848;}
-  .attendance-btn.holiday{color:#2376D8;}
-  .attendance-btn.active.present{background:#DDF5EA;border-color:#A9DFC8;}
-  .attendance-btn.active.absent{background:#FBE2E2;border-color:#F0B6B6;}
-  .attendance-btn.active.holiday{background:#E1EEFF;border-color:#B7D4F5;}
-  .attendance-empty{background:#fff;border:1px dashed #D5D8DF;border-radius:18px;padding:30px 18px;text-align:center;color:#8A8A8F;font-size:14px;}
-  @media(max-width:390px){.attendance-date-card input{min-width:132px;font-size:13px}.attendance-title{font-size:20px}.attendance-subtitle{font-size:11px}.attendance-btn{font-size:12px;}}
+
+  /* Students is a true full-screen surface: no app bottom navigation/padding is shown here. */
+  .students-overlay,.students-overlay .students-screen,.student-detail,.student-detail .student-detail-screen{height:100dvh;min-height:100dvh;}
+  .students-screen,.student-detail-screen{padding-bottom:env(safe-area-inset-bottom);}
+
+
+  /* Student Payment History */
+  .payment-history-overlay{position:fixed;inset:0;z-index:98;display:none;background:#F3F3F8;color:#111;overflow:hidden;}
+  .payment-history-overlay.open{display:block;}
+  .payment-history-screen{width:100%;height:100%;max-width:480px;margin:0 auto;background:#F3F3F8;overflow:auto;padding-bottom:28px;}
+  .payment-history-head{position:sticky;top:0;z-index:10;background:#F3F3F8;min-height:68px;padding:12px 18px;display:flex;align-items:center;gap:12px;}
+  .payment-history-back{border:0;background:none;color:#0B347D;font-size:44px;line-height:1;width:42px;height:48px;padding:0;cursor:pointer;}
+  .payment-history-title{font-size:22px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .payment-history-profile{margin:0 14px 14px;background:#fff;border:1px solid #E1E1E6;border-radius:20px;padding:16px 16px 14px;}
+  .payment-history-profile-top{display:flex;align-items:center;gap:14px;}
+  .payment-history-avatar{width:66px;height:66px;border-radius:50%;background:#3B82E8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;flex:0 0 auto;}
+  .payment-history-name{font-size:24px;font-weight:900;line-height:1.15;}
+  .payment-history-badge{display:inline-block;margin-top:7px;padding:6px 10px;border-radius:10px;background:#E8F8EE;color:#35B96B;border:1px solid #C9EBD5;font-size:12px;font-weight:800;}
+  .payment-history-divider{height:1px;background:#E2E2E2;margin:14px 0 12px;}
+  .payment-history-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .payment-history-meta-label{font-size:12px;color:#888;font-weight:700;margin-bottom:7px;}
+  .payment-history-meta-value{font-size:16px;font-weight:900;}
+  .payment-history-year{margin:0 14px 14px;background:#fff;border:1px solid #E1E1E6;border-radius:18px;min-height:76px;padding:10px 14px;display:flex;flex-direction:column;justify-content:center;gap:6px;}
+  .payment-history-year-label{font-size:12px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:.8px;text-align:center;}
+  .payment-history-year-nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;}
+  .payment-history-year-btn{border:0;background:#F1F3F8;color:#0B347D;border-radius:12px;min-height:38px;padding:0 10px;font-size:14px;font-weight:900;cursor:pointer;}
+  .payment-history-year-btn:disabled{opacity:.35;cursor:default;}
+  .payment-history-year-current{font-size:18px;font-weight:900;color:#111;min-width:64px;text-align:center;}
+  .payment-history-year-btn.next{text-align:right;}
+  .payment-month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 14px 18px;}
+  .payment-month{min-height:128px;background:#fff;border:1px solid #E3E3E8;border-radius:18px;padding:18px 8px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;box-sizing:border-box;}
+  .payment-month.paid{background:#E9F9EF;border-color:#BFE8CF;color:#111;}
+  .payment-month.future{background:#fff;color:#111;}
+  .payment-month.na{background:#F5F4F8;color:#111;opacity:.62;}
+  .payment-month-name{font-size:15px;font-weight:900;margin-bottom:12px;}
+  .payment-month-icon{width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#C2C2C7;margin-bottom:8px;}
+  .payment-month.paid .payment-month-icon{background:#39C66B;color:#fff;}
+  .payment-month-status{font-size:13px;font-weight:800;color:#C2C2C7;}
+  .payment-month.paid .payment-month-status{color:#39B966;}
+  .payment-month.due .payment-month-status{color:#D49A18;}
+  .payment-history-totals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 14px 10px;}
+  .payment-total{border-radius:15px;padding:12px;border:1px solid #DDE3E8;font-weight:800;}
+  .payment-total.paid{background:#E8F8EE;color:#35B96B;border-color:#C9EBD5;}
+  .payment-total.due{background:#FFE6E6;color:#E04A4A;border-color:#F2C5C5;}
+  .payment-total small{display:block;font-size:12px;margin-bottom:4px;}
+  .payment-total strong{font-size:18px;}
+  .payment-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 14px 22px;}
+  .payment-breakdown-item{background:#fff;border:1px solid #E1E1E6;border-radius:14px;padding:11px 8px;}
+  .payment-breakdown-item small{display:block;font-size:11px;font-weight:800;margin-bottom:7px;}
+  .payment-breakdown-item strong{font-size:16px;}
+  .payment-breakdown-item.paid strong{color:#35B96B;}
+  .payment-breakdown-item.partial strong{color:#C88618;}
+  .payment-breakdown-item.unpaid strong{color:#E04A4A;}
+  @media(max-width:390px){
+    .payment-history-title{font-size:20px;}
+    .payment-history-avatar{width:60px;height:60px;font-size:23px;}
+    .payment-history-name{font-size:21px;}
+    .payment-month{min-height:118px;padding-top:15px;}
+    .payment-month-name{font-size:14px;}
+  }
+
+  /* Attendance - Student Details style */
+  .attendance-overlay{position:fixed;inset:0;z-index:99;display:none;background:#F3F3F8;color:#111;overflow:hidden}.attendance-overlay.open{display:block}.attendance-screen{width:100%;height:100dvh;max-width:480px;margin:0 auto;background:#F3F3F8;overflow:auto;padding-bottom:82px}.attendance-head{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #E1E1E6;min-height:72px;padding:10px 14px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center}.attendance-back{border:0;background:none;font-size:44px;line-height:1;color:#0B347D;width:42px;height:42px;padding:0;cursor:pointer}.attendance-title-wrap{text-align:center;min-width:0}.attendance-title{font-size:22px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.attendance-title-icon,.attendance-subtitle{display:none}.attendance-settings{border:0;background:none;color:#0B347D;font-size:29px;cursor:pointer}.attendance-body{padding:12px 14px 0}.attendance-profile-card{background:#fff;border:1px solid #E1E1E6;border-radius:20px;padding:15px 14px 13px;box-shadow:0 3px 9px rgba(20,25,40,.08)}.attendance-profile-top{display:flex;align-items:center;gap:12px}.attendance-avatar{width:64px;height:64px;border-radius:50%;background:#347BE5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;flex:0 0 auto}.attendance-profile-name{font-size:24px;font-weight:800;line-height:1.1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.attendance-profile-badge{display:inline-flex;align-items:center;gap:5px;margin-top:7px;border:1px solid #CBE9D9;background:#E9F8EF;color:#38B96D;border-radius:12px;padding:5px 9px;font-size:12px;font-weight:800;max-width:100%}.attendance-profile-stats{display:grid;grid-template-columns:1fr 1fr;margin-top:12px;padding-top:10px;border-top:1px solid #E9E9EC;gap:8px}.attendance-profile-stats.three{grid-template-columns:1fr 1.55fr 1.15fr;gap:6px}.attendance-profile-stat-label{font-size:10px;color:#8A8A8F;font-weight:800}.attendance-profile-stat-value{font-size:16px;font-weight:800;margin-top:4px;white-space:nowrap}.attendance-profile-stat.schedule-stat{text-align:center;min-width:0}.attendance-profile-stat .student-schedule-days{display:flex;justify-content:center;gap:2px;margin-top:5px;flex-wrap:nowrap}.attendance-profile-stat .student-day{font-size:9px;font-weight:800;color:#147B58;background:#E8F8F0;border-radius:7px;padding:4px 3px;line-height:1}.attendance-profile-stat .student-schedule-note{display:block;font-size:8px;font-weight:800;color:#B94A4A;margin-top:4px;white-space:nowrap}.attendance-view-tabs{display:grid;grid-template-columns:1fr 1fr;margin:12px 0;background:#E8EBF2;border-radius:15px;padding:3px}.attendance-view-tab{border:0;background:transparent;color:#8E9098;min-height:42px;border-radius:13px;font-size:13px;font-weight:800;cursor:pointer}.attendance-view-tab.active{background:#0B347D;color:#fff;box-shadow:0 2px 5px rgba(11,52,125,.2)}.attendance-month-row{display:flex;justify-content:center;margin:0 0 12px}.attendance-month-select{border:1px solid #E1E2E8;background:#F8F7FB;border-radius:12px;padding:10px 14px;font-size:14px;font-weight:800;color:#222;min-width:170px;text-align:center}.attendance-calendar-card,.attendance-log-card{background:#fff;border:1px solid #E1E1E6;border-radius:17px;box-shadow:0 2px 7px rgba(20,25,40,.05)}.attendance-calendar-card{padding:13px 10px 12px}.attendance-section-label{font-size:15px;font-weight:900;margin:0 0 12px 2px}.attendance-week,.attendance-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}.attendance-week{margin-bottom:5px}.attendance-week span{font-size:10px;color:#8A8A8F;font-weight:800}.attendance-day-cell{min-height:42px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;font-size:12px;font-weight:800;cursor:pointer;border:1px solid transparent;padding:0}.attendance-day-cell.blank{background:transparent;cursor:default}.attendance-day-cell.scheduled{background:#A9B8C9;color:#fff}.attendance-day-cell.present{background:#E5F7EF;border-color:#BEE8D0;color:#111}.attendance-day-cell.present::after{content:'✓';width:23px;height:23px;border-radius:50%;background:#39C66B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:2px}.attendance-day-cell.absent{background:#FDEAEA;border-color:#F0C0C0;color:#111}.attendance-day-cell.absent::after{content:'×';width:23px;height:23px;border-radius:50%;background:#E04A4A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:2px}.attendance-day-cell.holiday{background:#3C82DC;color:#fff;border-color:#3C82DC;cursor:pointer}.attendance-day-cell.holiday::after{content:'✓';font-size:18px;color:#fff;font-weight:900}.attendance-day-cell.holiday:active{transform:scale(.94)}.attendance-day-cell.unrecorded{background:#F4B2EE;color:#fff}.attendance-day-cell.future{background:#fff;color:#B7B8BE;border-color:#E2E2E6}.attendance-day-cell.today{box-shadow:0 0 0 2px #0B347D inset}.attendance-day-cell .att-mark{font-size:7px;line-height:1;margin-top:1px;opacity:.9}.attendance-legend{display:flex;flex-wrap:wrap;gap:7px 10px;margin:12px 3px 0;justify-content:center}.attendance-legend span{font-size:9px;color:#8A8A8F;font-weight:700;display:flex;align-items:center;gap:4px}.attendance-legend i{width:8px;height:8px;border-radius:50%;display:inline-block;background:#A9B8C9}.attendance-legend .p{background:#16B878}.attendance-legend .a{background:#E04A4A}.attendance-legend .h{background:#2376D8}.attendance-legend .u{background:#B45AE8}.attendance-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.attendance-stat-grid.three{grid-template-columns:repeat(3,1fr)}.attendance-stat-card{background:#fff;border:1px solid #E1E1E6;border-radius:15px;padding:12px 10px;text-align:center}.attendance-stat-card strong{display:block;font-size:19px;font-weight:900}.attendance-stat-card span{display:block;font-size:10px;color:#8A8A8F;font-weight:700;margin-top:4px}.attendance-stat-card.green strong{color:#16A36F}.attendance-stat-card.red strong{color:#E04A4A}.attendance-stat-card.blue strong{color:#2376D8}.attendance-stat-card.gold strong{color:#D49A18}.attendance-log-card{margin-top:12px;padding:14px 12px}.attendance-log-title{font-size:15px;font-weight:900;margin-bottom:9px}.attendance-log-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 2px;border-top:1px solid #EEEEF1;align-items:center}.attendance-log-date{font-size:13px;font-weight:700}.attendance-log-sub{font-size:10px;color:#9A9A9F;margin-top:3px}.attendance-log-status{font-size:10px;font-weight:800;padding:5px 8px;border-radius:8px;background:#E8F8EE;color:#35B96B}.attendance-log-status.absent{background:#FDEAEA;color:#E04A4A}.attendance-log-status.holiday{background:#E7F1FF;color:#1766B4}.attendance-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:30;height:66px;background:#fff;border-top:1px solid #E0E0E5;max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);box-shadow:0 -2px 8px rgba(0,0,0,.05)}.attendance-nav-item{border:0;background:#fff;color:#8A8A8F;font-size:9px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}.attendance-nav-item b{font-size:21px;line-height:1;color:#8A8A8F}.attendance-nav-item.active,.attendance-nav-item.active b{color:#0B347D}
+/* This Year attendance design */
+.attendance-year-wrap{margin-top:0}
+.attendance-year-switch{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px}
+.attendance-year-arrow{width:30px;height:30px;border:0;border-radius:8px;background:#EEF1F7;color:#0B347D;font-size:21px;font-weight:900;line-height:1;cursor:pointer}
+.attendance-year-label{min-width:138px;height:30px;padding:0 9px;border-radius:8px;background:#EEF1F7;color:#111;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.attendance-year-label .cal{margin-right:5px;color:#0B347D}
+.attendance-year-calendar-card{background:#fff;border:1px solid #E1E1E6;border-radius:17px;padding:13px 10px 12px;box-shadow:0 2px 7px rgba(20,25,40,.05)}
+.attendance-year-heading{font-size:12px;font-weight:900;margin:0 0 8px 2px}
+.attendance-year-note{font-size:8px;color:#8A8A8F;margin:0 0 8px 2px}
+.attendance-year-month{margin:0 0 10px}
+.attendance-year-month:last-child{margin-bottom:0}
+.attendance-year-month-title{font-size:8px;font-weight:900;color:#0B347D;margin:0 0 3px 2px}
+.attendance-year-days{display:flex;flex-wrap:wrap;gap:3px 4px;padding-left:28px}
+.attendance-year-day{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;border:0;padding:0}
+.attendance-year-day.unrecorded{background:#E995E8;color:#fff}
+.attendance-year-day.present{background:#28B96A;color:#fff}
+.attendance-year-day.absent{background:#E14B4B;color:#fff}
+.attendance-year-day.holiday{background:#3C82DC;color:#fff}
+.attendance-year-day.scheduled{background:#9BA9BA;color:#fff}
+.attendance-year-day.before{background:#E7E8ED;color:#9A9BA1}
+.attendance-year-day.today{box-shadow:0 0 0 2px #0B347D inset}
+.attendance-year-legend{display:flex;flex-wrap:wrap;gap:6px 9px;margin:12px 2px 0;justify-content:center}
+.attendance-year-legend span{font-size:7px;color:#8A8A8F;font-weight:700;display:flex;align-items:center;gap:3px}
+.attendance-year-legend i{width:6px;height:6px;border-radius:50%;display:inline-block;background:#9BA9BA}
+.attendance-year-legend .yp{background:#28B96A}.attendance-year-legend .ya{background:#E14B4B}.attendance-year-legend .yh{background:#3C82DC}.attendance-year-legend .yu{background:#E995E8}.attendance-year-legend .yr{background:#9C5BEA}.attendance-year-legend .yg{background:#D39A1A}
+.attendance-year-summary-title{font-size:12px;font-weight:900;margin:13px 2px 8px}
+.attendance-year-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.attendance-year-summary .attendance-stat-card{padding:11px 8px}
+.attendance-year-summary .attendance-stat-card strong{font-size:17px}
+.attendance-year-summary .attendance-stat-card span{font-size:9px}
+.attendance-year-links{display:grid;gap:8px;margin-top:10px}
+.attendance-year-link{height:38px;border:1px solid #E1E1E6;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:10px;font-weight:800;color:#111}
+.attendance-year-link .arrow{color:#8A8A8F;font-size:17px}
+.attendance-year-link .gold{color:#D49A18}.attendance-year-link .blue{color:#1766B4}
+@media(max-width:390px){.attendance-year-day{width:17px;height:17px;font-size:6.5px}.attendance-year-days{gap:3px 3px;padding-left:27px}}
+
+@media(max-width:390px){.attendance-profile-name{font-size:21px}.attendance-day-cell{min-height:39px}.attendance-calendar-card{padding-left:7px;padding-right:7px}.attendance-week,.attendance-calendar{gap:4px}.attendance-month-select{font-size:13px;min-width:160px}.attendance-profile-stats.three{grid-template-columns:.9fr 1.7fr 1.15fr;gap:4px}.attendance-profile-stat .student-day{font-size:8px;padding:4px 2px}.attendance-profile-stat .student-schedule-note{font-size:7px}}
 
   .sigma-menu{
     position:absolute;top:66px;right:58px;z-index:60;display:none;
@@ -698,6 +762,9 @@
 /* Smooth display: let the browser skip painting off-screen list cards. */
 .row-card,.student-card,.attendance-row{content-visibility:auto;contain:layout paint style;contain-intrinsic-size:170px;}
 .list,.students-list,.attendance-list{-webkit-overflow-scrolling:touch;}
+
+.attendance-day-cell.holiday{cursor:pointer}
+.attendance-day-cell.holiday:active{transform:scale(.96)}
 </style>
 
 <script>
@@ -709,6 +776,39 @@
 <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style id="payment-history-upgrade-css">
+.payment-history-year-wrap{margin:0 14px 14px;position:relative;}
+.payment-history-year-select{width:100%;min-height:62px;border:1px solid #E1E1E6;border-radius:18px;background:#fff;padding:0 46px 0 16px;font-size:17px;font-weight:900;color:#111;appearance:auto;}
+.payment-month.clickable{cursor:pointer;}
+.payment-month.clickable:active{transform:scale(.98);}
+.payment-detail-overlay{position:fixed;inset:0;z-index:130;display:none;background:rgba(0,0,0,.52);align-items:center;justify-content:center;padding:16px;box-sizing:border-box;}
+.payment-detail-overlay.open{display:flex;}
+.payment-detail-modal{width:min(600px,100%);max-height:90dvh;overflow:auto;background:#fff;border-radius:28px;padding:24px;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.payment-detail-head{display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee;padding-bottom:14px;margin-bottom:16px;}
+.payment-detail-icon{font-size:34px;color:#0B347D;}
+.payment-detail-title{font-size:26px;font-weight:900;flex:1;}
+.payment-detail-close{border:0;background:none;color:#999;font-size:38px;line-height:1;cursor:pointer;}
+.payment-detail-summary{background:#F7F6FB;border:1px solid #E2E0E8;border-radius:18px;padding:16px;margin-bottom:20px;}
+.payment-detail-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:16px;}
+.payment-detail-row span{color:#999;}
+.payment-detail-row strong{text-align:right;}
+.payment-detail-trans{font-size:18px;font-weight:900;margin:8px 0 12px;}
+.payment-detail-card{border:2px solid #0B347D;border-radius:18px;padding:14px;margin-bottom:12px;}
+.payment-detail-card-top{display:flex;justify-content:space-between;gap:12px;align-items:center;}
+.payment-detail-card-top b{color:#0B347D;background:#EEF3FC;padding:7px 10px;border-radius:8px;}
+.payment-detail-amount{color:#35B96B;font-size:20px;font-weight:900;}
+.payment-detail-card-meta{display:flex;justify-content:space-between;gap:10px;color:#777;border-bottom:1px solid #eee;padding:12px 0;}
+.payment-detail-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:12px;}
+.payment-detail-actions button{border:0;border-radius:10px;padding:9px 16px;font-weight:800;cursor:pointer;}
+.payment-edit{background:#EAF0FB;color:#0B347D;}
+.payment-delete{background:#FFEAEA;color:#D84444;}
+.payment-detail-empty{border:1px dashed #ccc;border-radius:18px;padding:28px;text-align:center;color:#999;}
+.payment-detail-close-bottom{width:100%;margin-top:8px;border:1px solid #ddd;background:#fff;border-radius:14px;padding:13px;font-size:16px;font-weight:800;color:#888;}
+.totals-table tbody tr.clickable-total{cursor:pointer;}
+.totals-table tbody tr.clickable-total:active{background:#F1F4FA;}
+@media(max-width:560px){.payment-detail-modal{padding:18px;border-radius:24px;}.payment-detail-title{font-size:22px;}.payment-detail-row{font-size:15px;}}
+</style>
 </head>
 <body>
 <div id="shell">
@@ -850,14 +950,9 @@
       <div class="students-tools">
         <div class="students-search">
           <span class="students-search-icon">⌕</span>
-          <input id="studentsSearch" placeholder="Search students by name">
+          <input id="studentsSearch" placeholder="Search students by name…" autocomplete="off">
         </div>
-        <button class="students-filter-btn" id="studentsFilterBtn"><span class="students-filter-icon">▽</span> Add Filter</button>
-      </div>
-      <div class="students-filter-row" id="studentsFilterRow">
-        <button class="students-filter-chip active" data-filter="all">All</button>
-        <button class="students-filter-chip" data-filter="personal">Personal</button>
-        <button class="students-filter-chip" data-filter="batch">Batch</button>
+        <div class="students-count" id="studentsCount">0 students</div>
       </div>
       <div class="students-list" id="studentsList"></div>
     </div>
@@ -875,24 +970,58 @@
   </div>
 </div>
 
+
+<div id="paymentHistoryOverlay" class="payment-history-overlay">
+  <div class="payment-history-screen">
+    <div class="payment-history-head">
+      <button class="payment-history-back" id="paymentHistoryBack" aria-label="Back">‹</button>
+      <div class="payment-history-title">Student Payment History</div>
+    </div>
+    <div id="paymentHistoryBody"></div>
+  </div>
+</div>
+
+<div id="paymentDetailOverlay" class="payment-detail-overlay" aria-hidden="true">
+  <div class="payment-detail-modal" role="dialog" aria-modal="true">
+    <div class="payment-detail-head">
+      <div class="payment-detail-icon">▤</div><div class="payment-detail-title">Payment Details</div>
+      <button class="payment-detail-close" id="paymentDetailClose" aria-label="Close">×</button>
+    </div>
+    <div id="paymentDetailBody"></div>
+    <button class="payment-detail-close-bottom" id="paymentDetailCloseBottom">Close</button>
+  </div>
+</div>
+
 <!-- Student add/edit modal -->
 <div class="overlay" id="studentFormOverlay">
   <div class="modal">
     <h2 id="studentFormTitle">Add student</h2>
     <label>Name</label>
     <input id="sName" placeholder="Full name">
-    <label>Student type</label>
-    <select id="sType">
-      <option value="personal">Personal</option>
-      <option value="batch">Batch</option>
-    </select>
     <label>Batch / Class</label>
-    <input id="sBatch" placeholder="e.g. Class 4 or Morning Batch">
+    <select id="sBatch">
+      <option value="">Select class / batch</option>
+      <option value="Class 1">Class 1</option>
+      <option value="Class 2">Class 2</option>
+      <option value="Class 3">Class 3</option>
+      <option value="Class 4">Class 4</option>
+      <option value="Class 5">Class 5</option>
+      <option value="Class 6">Class 6</option>
+      <option value="Class 7">Class 7</option>
+      <option value="Class 8">Class 8</option>
+      <option value="Class 9">Class 9</option>
+      <option value="Class 10">Class 10</option>
+      <option value="Class 11">Class 11</option>
+      <option value="Class 12">Class 12</option>
+      <option value="Morning Batch">Morning Batch</option>
+      <option value="Afternoon Batch">Afternoon Batch</option>
+      <option value="Evening Batch">Evening Batch</option>
+      <option value="Other">Other</option>
+    </select>
     <label>Start / Joining date</label>
     <input id="sStart" type="date">
     <label>Cycle length</label>
     <select id="sCycle">
-      <option value="30 days">30 days</option>
       <option value="1 month">1 month</option>
     </select>
     <label>Monthly fee</label>
@@ -904,28 +1033,14 @@
   </div>
 </div>
 
-<!-- Attendance -->
+<!-- Attendance / Student Details -->
 <div id="attendanceOverlay" class="attendance-overlay">
   <div class="attendance-screen">
-    <div class="attendance-head">
-      <button class="attendance-back" id="attendanceBack" aria-label="Back">‹</button>
-      <div class="attendance-title-wrap">
-        <div class="attendance-title"><span class="attendance-title-icon">✓</span> Attendance</div>
-        <div class="attendance-subtitle">Present, absent &amp; holiday records</div>
-      </div>
-      <div class="attendance-head-spacer"></div>
-    </div>
-    <div class="attendance-body">
-      <div class="attendance-date-card">
-        <div>
-          <div class="attendance-date-label">Attendance Date</div>
-          <div class="attendance-date-hint" id="attendanceDayHint">Today</div>
-        </div>
-        <input id="attendanceDate" type="date" aria-label="Attendance date">
-      </div>
-      <div class="attendance-summary" id="attendanceSummary"></div>
-      <div class="attendance-note" id="attendanceFridayNote" style="display:none;">Friday is the weekly off day. It is marked <b>Holiday</b> automatically.</div>
-      <div class="attendance-list" id="attendanceList"></div>
+    <div class="attendance-head"><button class="attendance-back" id="attendanceBack" aria-label="Back">‹</button><div class="attendance-title-wrap"><div class="attendance-title">Student's Details</div></div><button class="attendance-settings" id="attendanceSettings" aria-label="Student settings">⚙</button></div>
+    <div class="attendance-body"><div id="attendanceProfile"></div>
+      <div class="attendance-view-tabs"><button class="attendance-view-tab active" data-att-view="month">Current Month</button><button class="attendance-view-tab" data-att-view="year">This Year</button></div>
+      <div class="attendance-month-row"><select id="attendanceMonthSelect" class="attendance-month-select" aria-label="Attendance month"></select></div>
+      <div id="attendanceCalendarArea"></div>
     </div>
   </div>
 </div>
@@ -937,7 +1052,6 @@
 </div><!-- /shell -->
 
 <script>
-/* Set WEBSITE_URL below to your real Tuition Fee website to activate website login/Google. */
 /* ---------------- Date helpers ---------------- */
 function dmyToIso(dmy){
   if(!dmy) return "";
@@ -1160,7 +1274,6 @@ async function setProfile(p){
 function authCardEl(){ return document.getElementById('authCard'); }
 function esc(v){ return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-const WEBSITE_URL = 'https://vik970000.github.io/tuition-fee/';
 
 // Firebase Authentication handles the real Google sign-in.
 // Use popup flow here because some mobile browsers can partition/clear
@@ -1196,13 +1309,6 @@ async function startGoogleLogin(){
   }
 }
 
-function openWebsite(kind){
-  let url=WEBSITE_URL;
-  if(kind==='signup') url += (url.includes('?')?'&':'?')+'mode=signup';
-  if(kind==='login') url += (url.includes('?')?'&':'?')+'mode=login';
-  if(kind==='google') url += (url.includes('?')?'&':'?')+'provider=google';
-window.location.href=url;
-}
 function renderCreateAccount(){
   authCardEl().innerHTML = `
     <div class="auth-brand">
@@ -1676,13 +1782,117 @@ document.getElementById('compactToggle').addEventListener('click', ()=>{
   saveSoon();
   renderList();
 });
-document.getElementById('totalsClose').addEventListener('click', ()=> document.getElementById('totalsOverlay').classList.remove('open'));
+let tfOverlayStack = [];
+if (!history.state || !history.state.tuitionFeeBase) {
+  history.replaceState({ ...(history.state || {}), tuitionFeeBase:true }, '', location.href);
+}
+function tfPushOverlay(name){
+  tfOverlayStack.push(name);
+  history.pushState({ tuitionFeeOverlay:name }, '', location.href);
+}
+function tfCloseOverlay(name){
+  const i=tfOverlayStack.lastIndexOf(name);
+  if(i!==-1){
+    tfOverlayStack.splice(i,1);
+    history.back();
+  }else{
+    const el=document.getElementById(name+'Overlay');
+    if(el) el.classList.remove('open');
+  }
+}
+function tfCloseAllOverlays(){
+  document.getElementById('totalsOverlay')?.classList.remove('open');
+  document.getElementById('studentsOverlay')?.classList.remove('open');
+  document.getElementById('attendanceOverlay')?.classList.remove('open');
+  document.getElementById('studentDetail')?.classList.remove('open');
+  document.getElementById('paymentHistoryOverlay')?.classList.remove('open');
+  document.getElementById('paymentDetailOverlay')?.classList.remove('open');
+  tfOverlayStack=[];
+}
+function tfRestoreAfterPop(top){
+  if(top==='totals') document.getElementById('totalsOverlay')?.classList.remove('open');
+  else if(top==='students') document.getElementById('studentsOverlay')?.classList.remove('open');
+  else if(top==='attendance') document.getElementById('attendanceOverlay')?.classList.remove('open');
+  else if(top==='studentDetail'){
+    document.getElementById('studentDetail')?.classList.remove('open');
+    document.getElementById('studentsOverlay')?.classList.add('open');
+    try{ studentSearchRender(); }catch(e){}
+  }
+  else if(top==='paymentDetail'){
+    const el=document.getElementById('paymentDetailOverlay');
+    if(el){el.classList.remove('open');el.setAttribute('aria-hidden','true');}
+  }else if(top==='paymentHistory'){
+    document.getElementById('paymentHistoryOverlay')?.classList.remove('open');
+    document.getElementById('studentDetail')?.classList.add('open');
+  }else tfCloseAllOverlays();
+}
+window.addEventListener('popstate',()=>{
+  const top=tfOverlayStack.pop();
+  tfRestoreAfterPop(top);
+});
+
+/* One-step swipe/flick navigation.
+   Finger moving RIGHT = exactly one app-screen back.
+   Works through: Students → Student Details → Payment History → Payment Details.
+   Vertical scrolling remains normal. */
+function appBackOneScreen(){
+  const active=document.activeElement;
+  if(active && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName)) return false;
+  if(tfOverlayStack.length){
+    history.back();
+    return true;
+  }
+  return false;
+}
+(function addBackSwipe(){
+  let sx=0, sy=0, startTime=0, tracking=false, horizontalLocked=false;
+  const SWIPE_DISTANCE=55;
+  const SWIPE_VELOCITY=0.28; // px/ms
+
+  document.addEventListener('touchstart',ev=>{
+    if(!ev.touches || ev.touches.length!==1) return;
+    const t=ev.touches[0];
+    sx=t.clientX; sy=t.clientY; startTime=Date.now();
+    tracking=true; horizontalLocked=false;
+  },{passive:true});
+
+  document.addEventListener('touchmove',ev=>{
+    if(!tracking || !ev.touches || ev.touches.length!==1) return;
+    const t=ev.touches[0];
+    const dx=t.clientX-sx, dy=t.clientY-sy;
+    // Once the gesture is clearly vertical, leave it completely alone.
+    if(Math.abs(dy)>18 && Math.abs(dy)>Math.abs(dx)*1.15){
+      tracking=false;
+      return;
+    }
+    if(dx>18 && Math.abs(dx)>Math.abs(dy)*1.15) horizontalLocked=true;
+  },{passive:true});
+
+  document.addEventListener('touchend',ev=>{
+    if(!tracking || !ev.changedTouches || ev.changedTouches.length!==1) return;
+    tracking=false;
+    const t=ev.changedTouches[0];
+    const dx=t.clientX-sx, dy=t.clientY-sy;
+    const elapsed=Math.max(1,Date.now()-startTime);
+    const horizontal=horizontalLocked || Math.abs(dx)>Math.abs(dy)*1.2;
+    const distanceOk=dx>=SWIPE_DISTANCE;
+    const flickOk=dx>=40 && elapsed<=220 && (dx/elapsed)>=SWIPE_VELOCITY;
+    if(dx>0 && horizontal && (distanceOk || flickOk)) appBackOneScreen();
+  },{passive:true});
+})();
 
 // All-time totals from the Σ menu
 document.getElementById('sigmaTotals').addEventListener('click', (ev)=>{
   ev.stopPropagation();
   sigmaMenu.classList.remove('open');
   openTotals();
+});
+
+// Close All-time totals modal
+document.getElementById('totalsClose')?.addEventListener('click', (ev)=>{
+  ev.preventDefault();
+  ev.stopPropagation();
+  tfCloseOverlay('totals');
 });
 
 const CURRENCIES = [{"code":"AED","name":"UAE Dirham","symbol":"د.إ"},{"code":"AFN","name":"Afghani","symbol":"AFN"},{"code":"ALL","name":"Lek","symbol":"L"},{"code":"AMD","name":"Armenian Dram","symbol":"֏"},{"code":"ANG","name":"Netherlands Antillean Guilder","symbol":"ANG"},{"code":"AOA","name":"Kwanza","symbol":"AOA"},{"code":"ARS","name":"Argentine Peso","symbol":"$"},{"code":"AUD","name":"Australian Dollar","symbol":"A$"},{"code":"AWG","name":"Aruban Florin","symbol":"AWG"},{"code":"AZN","name":"Azerbaijan Manat","symbol":"₼"},{"code":"BAM","name":"Convertible Mark","symbol":"KM"},{"code":"BBD","name":"Barbados Dollar","symbol":"Bds$"},{"code":"BDT","name":"Taka","symbol":"৳"},{"code":"BGN","name":"Bulgarian Lev","symbol":"лв"},{"code":"BHD","name":"Bahraini Dinar","symbol":".د.ب"},{"code":"BIF","name":"Burundi Franc","symbol":"BIF"},{"code":"BMD","name":"Bermudian Dollar","symbol":"BMD"},{"code":"BND","name":"Brunei Dollar","symbol":"B$"},{"code":"BOB","name":"Boliviano","symbol":"Bs"},{"code":"BOV","name":"Mvdol","symbol":"BOV"},{"code":"BRL","name":"Brazilian Real","symbol":"R$"},{"code":"BSD","name":"Bahamian Dollar","symbol":"B$"},{"code":"BTN","name":"Ngultrum","symbol":"Nu."},{"code":"BWP","name":"Pula","symbol":"P"},{"code":"BYN","name":"Belarusian Ruble","symbol":"Br"},{"code":"BZD","name":"Belize Dollar","symbol":"BZ$"},{"code":"CAD","name":"Canadian Dollar","symbol":"C$"},{"code":"CDF","name":"Congolese Franc","symbol":"CDF"},{"code":"CHE","name":"WIR Euro","symbol":"CHE"},{"code":"CHF","name":"Swiss Franc","symbol":"CHF"},{"code":"CHW","name":"WIR Franc","symbol":"CHW"},{"code":"CLF","name":"Unidad de Fomento","symbol":"CLF"},{"code":"CLP","name":"Chilean Peso","symbol":"$"},{"code":"CNY","name":"Yuan Renminbi","symbol":"¥"},{"code":"COP","name":"Colombian Peso","symbol":"$"},{"code":"COU","name":"Unidad de Valor Real","symbol":"COU"},{"code":"CRC","name":"Costa Rican Colon","symbol":"₡"},{"code":"CUC","name":"Peso Convertible","symbol":"CUC"},{"code":"CUP","name":"Cuban Peso","symbol":"CUP"},{"code":"CVE","name":"Cabo Verde Escudo","symbol":"CVE"},{"code":"CZK","name":"Czech Koruna","symbol":"Kč"},{"code":"DJF","name":"Djibouti Franc","symbol":"DJF"},{"code":"DKK","name":"Danish Krone","symbol":"kr"},{"code":"DOP","name":"Dominican Peso","symbol":"RD$"},{"code":"DZD","name":"Algerian Dinar","symbol":"دج"},{"code":"EGP","name":"Egyptian Pound","symbol":"E£"},{"code":"ERN","name":"Nakfa","symbol":"ERN"},{"code":"ETB","name":"Ethiopian Birr","symbol":"Br"},{"code":"EUR","name":"Euro","symbol":"€"},{"code":"FJD","name":"Fiji Dollar","symbol":"FJ$"},{"code":"FKP","name":"Falkland Islands Pound","symbol":"£"},{"code":"GBP","name":"Pound Sterling","symbol":"£"},{"code":"GEL","name":"Lari","symbol":"₾"},{"code":"GHS","name":"Ghana Cedi","symbol":"₵"},{"code":"GIP","name":"Gibraltar Pound","symbol":"£"},{"code":"GMD","name":"Dalasi","symbol":"GMD"},{"code":"GNF","name":"Guinean Franc","symbol":"GNF"},{"code":"GTQ","name":"Quetzal","symbol":"Q"},{"code":"GYD","name":"Guyana Dollar","symbol":"GYD"},{"code":"HKD","name":"Hong Kong Dollar","symbol":"HK$"},{"code":"HNL","name":"Lempira","symbol":"L"},{"code":"HRK","name":"Kuna","symbol":"kn"},{"code":"HTG","name":"Gourde","symbol":"HTG"},{"code":"HUF","name":"Forint","symbol":"Ft"},{"code":"IDR","name":"Rupiah","symbol":"Rp"},{"code":"ILS","name":"New Israeli Sheqel","symbol":"₪"},{"code":"INR","name":"Indian Rupee","symbol":"₹"},{"code":"IQD","name":"Iraqi Dinar","symbol":"IQD"},{"code":"IRR","name":"Iranian Rial","symbol":"IRR"},{"code":"ISK","name":"Iceland Krona","symbol":"kr"},{"code":"JMD","name":"Jamaican Dollar","symbol":"J$"},{"code":"JOD","name":"Jordanian Dinar","symbol":"د.ا"},{"code":"JPY","name":"Yen","symbol":"¥"},{"code":"KES","name":"Kenyan Shilling","symbol":"KSh"},{"code":"KGS","name":"Som","symbol":"с"},{"code":"KHR","name":"Riel","symbol":"៛"},{"code":"KMF","name":"Comorian Franc","symbol":"KMF"},{"code":"KPW","name":"North Korean Won","symbol":"KPW"},{"code":"KRW","name":"Won","symbol":"₩"},{"code":"KWD","name":"Kuwaiti Dinar","symbol":"د.ك"},{"code":"KYD","name":"Cayman Islands Dollar","symbol":"KYD"},{"code":"KZT","name":"Tenge","symbol":"₸"},{"code":"LAK","name":"Lao Kip","symbol":"₭"},{"code":"LBP","name":"Lebanese Pound","symbol":"ل.ل"},{"code":"LKR","name":"Sri Lanka Rupee","symbol":"Rs"},{"code":"LRD","name":"Liberian Dollar","symbol":"LRD"},{"code":"LSL","name":"Loti","symbol":"LSL"},{"code":"LYD","name":"Libyan Dinar","symbol":"ل.د"},{"code":"MAD","name":"Moroccan Dirham","symbol":"د.م."},{"code":"MDL","name":"Moldovan Leu","symbol":"L"},{"code":"MGA","name":"Malagasy Ariary","symbol":"MGA"},{"code":"MKD","name":"Denar","symbol":"ден"},{"code":"MMK","name":"Kyat","symbol":"K"},{"code":"MNT","name":"Tugrik","symbol":"₮"},{"code":"MOP","name":"Pataca","symbol":"MOP"},{"code":"MRU","name":"Ouguiya","symbol":"MRU"},{"code":"MUR","name":"Mauritius Rupee","symbol":"₨"},{"code":"MVR","name":"Rufiyaa","symbol":"MVR"},{"code":"MWK","name":"Malawi Kwacha","symbol":"MK"},{"code":"MXN","name":"Mexican Peso","symbol":"MX$"},{"code":"MXV","name":"Mexican Unidad de Inversion (UDI)","symbol":"MXV"},{"code":"MYR","name":"Malaysian Ringgit","symbol":"RM"},{"code":"MZN","name":"Mozambique Metical","symbol":"MT"},{"code":"NAD","name":"Namibia Dollar","symbol":"N$"},{"code":"NGN","name":"Naira","symbol":"₦"},{"code":"NIO","name":"Cordoba Oro","symbol":"C$"},{"code":"NOK","name":"Norwegian Krone","symbol":"kr"},{"code":"NPR","name":"Nepalese Rupee","symbol":"₨"},{"code":"NZD","name":"New Zealand Dollar","symbol":"NZ$"},{"code":"OMR","name":"Rial Omani","symbol":"﷼"},{"code":"PAB","name":"Balboa","symbol":"PAB"},{"code":"PEN","name":"Sol","symbol":"S/"},{"code":"PGK","name":"Kina","symbol":"PGK"},{"code":"PHP","name":"Philippine Peso","symbol":"₱"},{"code":"PKR","name":"Pakistan Rupee","symbol":"₨"},{"code":"PLN","name":"Zloty","symbol":"zł"},{"code":"PYG","name":"Guarani","symbol":"₲"},{"code":"QAR","name":"Qatari Rial","symbol":"ر.ق"},{"code":"RON","name":"Romanian Leu","symbol":"lei"},{"code":"RSD","name":"Serbian Dinar","symbol":"дин."},{"code":"RUB","name":"Russian Ruble","symbol":"₽"},{"code":"RWF","name":"Rwanda Franc","symbol":"RF"},{"code":"SAR","name":"Saudi Riyal","symbol":"﷼"},{"code":"SBD","name":"Solomon Islands Dollar","symbol":"SBD"},{"code":"SCR","name":"Seychelles Rupee","symbol":"₨"},{"code":"SDG","name":"Sudanese Pound","symbol":"ج.س."},{"code":"SEK","name":"Swedish Krona","symbol":"kr"},{"code":"SGD","name":"Singapore Dollar","symbol":"S$"},{"code":"SHP","name":"Saint Helena Pound","symbol":"£"},{"code":"SLE","name":"Leone","symbol":"SLE"},{"code":"SLL","name":"Leone","symbol":"SLL"},{"code":"SOS","name":"Somali Shilling","symbol":"SOS"},{"code":"SRD","name":"Surinam Dollar","symbol":"SRD"},{"code":"SSP","name":"South Sudanese Pound","symbol":"SSP"},{"code":"STN","name":"Dobra","symbol":"STN"},{"code":"SVC","name":"El Salvador Colon","symbol":"SVC"},{"code":"SYP","name":"Syrian Pound","symbol":"SYP"},{"code":"SZL","name":"Lilangeni","symbol":"SZL"},{"code":"THB","name":"Baht","symbol":"฿"},{"code":"TJS","name":"Somoni","symbol":"TJS"},{"code":"TMT","name":"Turkmenistan New Manat","symbol":"TMT"},{"code":"TND","name":"Tunisian Dinar","symbol":"د.ت"},{"code":"TOP","name":"Pa’anga","symbol":"TOP"},{"code":"TRY","name":"Turkish Lira","symbol":"₺"},{"code":"TTD","name":"Trinidad and Tobago Dollar","symbol":"TT$"},{"code":"TWD","name":"New Taiwan Dollar","symbol":"NT$"},{"code":"TZS","name":"Tanzanian Shilling","symbol":"TSh"},{"code":"UAH","name":"Hryvnia","symbol":"₴"},{"code":"UGX","name":"Uganda Shilling","symbol":"USh"},{"code":"USD","name":"US Dollar","symbol":"$"},{"code":"USN","name":"US Dollar (Next day)","symbol":"USN"},{"code":"UYI","name":"Uruguay Peso en Unidades Indexadas (UI)","symbol":"UYI"},{"code":"UYU","name":"Peso Uruguayo","symbol":"$U"},{"code":"UYW","name":"Unidad Previsional","symbol":"UYW"},{"code":"UZS","name":"Uzbekistan Sum","symbol":"лв"},{"code":"VED","name":"Bolívar Soberano","symbol":"VED"},{"code":"VES","name":"Bolívar Soberano","symbol":"VES"},{"code":"VND","name":"Dong","symbol":"₫"},{"code":"VUV","name":"Vatu","symbol":"VUV"},{"code":"WST","name":"Tala","symbol":"WST"},{"code":"XAF","name":"CFA Franc BEAC","symbol":"FCFA"},{"code":"XAG","name":"Silver","symbol":"XAG"},{"code":"XAU","name":"Gold","symbol":"XAU"},{"code":"XBA","name":"Bond Markets Unit European Composite Unit (EURCO)","symbol":"XBA"},{"code":"XBB","name":"Bond Markets Unit European Monetary Unit (E.M.U.-6)","symbol":"XBB"},{"code":"XBC","name":"Bond Markets Unit European Unit of Account 9 (E.U.A.-9)","symbol":"XBC"},{"code":"XBD","name":"Bond Markets Unit European Unit of Account 17 (E.U.A.-17)","symbol":"XBD"},{"code":"XCD","name":"East Caribbean Dollar","symbol":"EC$"},{"code":"XDR","name":"SDR (Special Drawing Right)","symbol":"XDR"},{"code":"XOF","name":"CFA Franc BCEAO","symbol":"CFA"},{"code":"XPD","name":"Palladium","symbol":"XPD"},{"code":"XPF","name":"CFP Franc","symbol":"₣"},{"code":"XPT","name":"Platinum","symbol":"XPT"},{"code":"XSU","name":"Sucre","symbol":"XSU"},{"code":"XTS","name":"Codes specifically reserved for testing purposes","symbol":"XTS"},{"code":"XUA","name":"ADB Unit of Account","symbol":"XUA"},{"code":"XXX","name":"The codes assigned for transactions where no currency is involved","symbol":"¤"},{"code":"YER","name":"Yemeni Rial","symbol":"YER"},{"code":"ZAR","name":"Rand","symbol":"R"},{"code":"ZMW","name":"Zambian Kwacha","symbol":"ZK"},{"code":"ZWL","name":"Zimbabwe Dollar","symbol":"ZWL"}];
@@ -1794,7 +2004,7 @@ function openTotals(){
       perPerson[e.name].pending += outstanding;
     });
   });
-  const rows = Object.entries(perPerson).sort((a,b)=> b[1].fee - a[1].fee);
+  const rows = Object.entries(perPerson).sort((a,b)=>a[0].localeCompare(b[0],undefined,{sensitivity:'base',numeric:true}));
   let html = `
     <div class="summary" style="padding:0;margin-bottom:6px;">
       <div class="stamp total"><div class="label">Total billed</div><div class="amt">${cur()}${grandTotal}</div><div class="subline">${state.parts.length} parts</div></div>
@@ -1807,11 +2017,27 @@ function openTotals(){
     html += `<tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:16px 0;">No records yet</td></tr>`;
   }
   rows.forEach(([name, r])=>{
-    html += `<tr><td class="tn">${name}</td><td>${r.parts}</td><td>${cur()}${r.fee}</td><td>${cur()}${r.paid}</td><td>${cur()}${r.pending}</td></tr>`;
+    html += `<tr class="clickable-total" data-student-name="${esc(name).replace(/"/g,'&quot;')}"><td class="tn">${esc(name)}</td><td>${r.parts}</td><td>${cur()}${r.fee}</td><td>${cur()}${r.paid}</td><td>${cur()}${r.pending}</td></tr>`;
   });
   html += `</tbody></table>`;
   document.getElementById('totalsBody').innerHTML = html;
   document.getElementById('totalsOverlay').classList.add('open');
+  tfPushOverlay('totals');
+  document.querySelectorAll('#totalsBody tr.clickable-total').forEach(row=>{
+    row.addEventListener('click',()=>{
+      const name=row.getAttribute('data-student-name')||'';
+      const ref=allStudentRefs().find(r=>String(r.e.name||'').trim().toLocaleLowerCase()===name.trim().toLocaleLowerCase());
+      if(ref){
+        const ti=tfOverlayStack.lastIndexOf('totals');
+        if(ti!==-1 && ti===tfOverlayStack.length-1){
+          tfOverlayStack[ti]='paymentHistory';
+          history.replaceState({ ...(history.state||{}), tuitionFeeOverlay:'paymentHistory' }, '', location.href);
+        }
+        paymentHistoryOpen(ref);
+        document.getElementById('totalsOverlay').classList.remove('open');
+      }
+    });
+  });
 }
 
 /* ---------------- Add person modal ---------------- */
@@ -1878,9 +2104,7 @@ const studentsOverlay = document.getElementById('studentsOverlay');
 const studentDetail = document.getElementById('studentDetail');
 const studentListEl = document.getElementById('studentsList');
 const studentsSearchEl = document.getElementById('studentsSearch');
-const studentsFilterRow = document.getElementById('studentsFilterRow');
 const studentFormOverlay = document.getElementById('studentFormOverlay');
-let studentsFilter = 'all';
 let selectedStudentRef = null;
 
 function allStudentRefs(){
@@ -1894,9 +2118,9 @@ function studentType(e){
   return e.studentType === 'batch' ? 'batch' : 'personal';
 }
 function studentTypeLabel(e){
-  const t=studentType(e);
+  // Display only the actual batch name. Never show the old Personal label.
   const b=(e.batchName||e.studentBatch||'').trim();
-  return b ? `${t==='batch'?'Batch':'Personal'} • ${b}` : (t==='batch'?'Batch':'Personal');
+  return b;
 }
 function studentInitials(name){
   const parts=String(name||'?').trim().split(/\s+/).filter(Boolean);
@@ -1905,29 +2129,33 @@ function studentInitials(name){
 }
 function studentSearchRender(){
   const q=(studentsSearchEl.value||'').trim().toLowerCase();
-  const refs=allStudentRefs().filter(r=>{
-    const okFilter=studentsFilter==='all'||studentType(r.e)===studentsFilter;
-    const okSearch=!q||String(r.e.name||'').toLowerCase().includes(q);
-    return okFilter&&okSearch;
+  const refs=allStudentRefs().filter(r=>!q||String(r.e.name||'').toLowerCase().includes(q));
+  // Show each person only once, even if the same name exists in multiple parts.
+  const unique=new Map();
+  refs.forEach(r=>{
+    const name=String(r.e.name||'').trim();
+    const key=name.toLocaleLowerCase().replace(/\s+/g,' ');
+    if(name && !unique.has(key)) unique.set(key,r);
   });
-  if(!refs.length){
+  const list=[...unique.values()];
+  list.sort((a,b)=>String(a.e.name||'').trim().localeCompare(String(b.e.name||'').trim(),undefined,{sensitivity:'base',numeric:true}));
+  const countEl=document.getElementById('studentsCount');
+  if(countEl) countEl.textContent=`${list.length} ${list.length===1?'student':'students'}`;
+  if(!list.length){
     studentListEl.innerHTML='<div class="students-empty"><strong>No students found</strong>Add a student using the ＋ button.</div>';
     return;
   }
   studentListEl.innerHTML='';
-  refs.forEach(r=>{
+  list.forEach((r,index)=>{
     const e=r.e;
     const card=document.createElement('div');
-    const typ=studentType(e);
-    card.className=`student-card ${typ} ${e.paid?'paid':'pending'}`;
-    const fee=e.fee==null?'—':`${cur()}${e.fee}`;
-    const status=e.paid?`<span class="student-paid">✓ Paid</span>`:`<span class="student-pending">Pending</span>`;
+    card.className='student-card';
     card.innerHTML=`
       <div class="student-accent"></div>
+      <div class="student-number">${index+1}</div>
       <div class="student-avatar">${esc(studentInitials(e.name))}</div>
       <div class="student-main">
-        <div class="student-name-line"><div class="student-name">${esc(e.name||'Unnamed')}</div>${status}</div>
-        ${(e.studentType||'personal')==='batch' ? `<div class="student-type">${esc(studentTypeLabel(e))}</div>` : ''}
+        <div class="student-name-line"><div class="student-name">${esc(e.name||'Unnamed')}</div></div>
       </div>
       <div class="student-view">View Details <span class="chev">›</span></div>`;
     card.addEventListener('click',()=>openStudentDetail(r));
@@ -1937,29 +2165,20 @@ function studentSearchRender(){
 function openStudents(){
   sigmaMenu.classList.remove('open');
   studentsOverlay.classList.add('open');
+  tfPushOverlay('students');
   studentsSearchEl.value='';
-  studentsFilter='all';
-  studentsFilterRow.classList.remove('open');
-  document.querySelectorAll('.students-filter-chip').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));
   studentSearchRender();
 }
-function closeStudents(){studentsOverlay.classList.remove('open');}
+function closeStudents(){tfCloseOverlay('students');}
 document.getElementById('sigmaStudents').addEventListener('click',openStudents);
 document.getElementById('studentsMenuBtn').addEventListener('click',closeStudents);
 studentsSearchEl.addEventListener('input',studentSearchRender);
-document.getElementById('studentsFilterBtn').addEventListener('click',()=>studentsFilterRow.classList.toggle('open'));
-document.querySelectorAll('.students-filter-chip').forEach(btn=>btn.addEventListener('click',()=>{
-  studentsFilter=btn.dataset.filter;
-  document.querySelectorAll('.students-filter-chip').forEach(b=>b.classList.toggle('active',b===btn));
-  studentSearchRender();
-}));
 
 function openStudentForm(ref=null){
   selectedStudentRef=ref;
   document.getElementById('studentFormTitle').textContent=ref?'Edit student':'Add student';
   document.getElementById('sName').value=ref?.e?.name||'';
-  document.getElementById('sType').value=ref?studentType(ref.e):'personal';
-  document.getElementById('sBatch').value=ref?.e?.batchName||'';
+    document.getElementById('sBatch').value=ref?.e?.batchName||'';
   document.getElementById('sStart').value=ref?.e?.start?dmyToIso(ref.e.start):'';
   document.getElementById('sCycle').value=ref?.e?.cycle||'30 days';
   document.getElementById('sFee').value=ref?.e?.fee??'';
@@ -1968,7 +2187,7 @@ function openStudentForm(ref=null){
 function saveStudentForm(){
   const name=document.getElementById('sName').value.trim();
   const startIso=document.getElementById('sStart').value;
-  const type=document.getElementById('sType').value;
+  const type='personal';
   const batchName=document.getElementById('sBatch').value.trim();
   const cycle=document.getElementById('sCycle').value;
   const feeVal=document.getElementById('sFee').value;
@@ -1993,14 +2212,46 @@ document.getElementById('studentsAddTop').addEventListener('click',()=>openStude
 document.getElementById('sCancel').addEventListener('click',()=>studentFormOverlay.classList.remove('open'));
 document.getElementById('sSave').addEventListener('click',saveStudentForm);
 
+function studentCurrentRef(name){
+  const key=String(name||'').trim().toLocaleLowerCase().replace(/\s+/g,' ');
+  const refs=allStudentRefs().filter(r=>String(r.e.name||'').trim().toLocaleLowerCase().replace(/\s+/g,' ')===key);
+  if(!refs.length) return null;
+  // Latest occurrence is the current connector for fee/batch.
+  return refs[refs.length-1];
+}
+function studentJoiningRef(name, fallback){
+  const key=String(name||'').trim().toLocaleLowerCase().replace(/\s+/g,' ');
+  const refs=allStudentRefs().filter(r=>String(r.e.name||'').trim().toLocaleLowerCase().replace(/\s+/g,' ')===key);
+  // Keep the original/earliest joining date; later transferred records must not change it.
+  const withStart=refs.filter(r=>r.e.start);
+  if(withStart.length){
+    withStart.sort((a,b)=>{
+      const da=dmyToIso(a.e.start||'');
+      const db=dmyToIso(b.e.start||'');
+      return (da||'9999-99-99').localeCompare(db||'9999-99-99');
+    });
+    return withStart[0];
+  }
+  return fallback||refs[0]||null;
+}
+function studentConnectedFee(name, fallback){
+  const current=studentCurrentRef(name);
+  const fee=current?.e?.fee;
+  return fee!==null && fee!==undefined && fee!=='' ? Number(fee) : (Number(fallback)||0);
+}
+
 function openStudentDetail(ref){
   selectedStudentRef=ref;
+  tfPushOverlay('studentDetail');
   const e=ref.e;
+  const currentRef=studentCurrentRef(e.name)||ref;
+  const joiningRef=studentJoiningRef(e.name,ref);
   studentsOverlay.classList.remove('open');
   studentDetail.classList.add('open');
   document.getElementById('studentDetailTitle').textContent="Student's Details";
-  const fee=e.fee==null?'—':`${cur()}${e.fee}`;
-  const joining=e.start||'—';
+  const connectedFee=studentConnectedFee(e.name,e.fee);
+  const fee=connectedFee===0 && (e.fee==null||e.fee==='')?'—':`${cur()}${connectedFee}`;
+  const joining=joiningRef?.e?.start||e.start||'—';
   const end=e.end||'—';
   const paid=e.paid?`${cur()}${e.paidAmount||e.fee||0}`:`${cur()}0`;
   const due=e.fee==null?'—':`${cur()}${Math.max(0,(e.fee||0)-(e.paidAmount||0))}`;
@@ -2011,8 +2262,8 @@ function openStudentDetail(ref){
       <div class="student-detail-badge">♙ ${esc(studentTypeLabel(e))}</div>
       <div class="student-stats">
         <div class="student-stat"><div class="student-stat-label">Monthly Fees</div><div class="student-stat-value">${fee}</div></div>
-        <div class="student-stat"><div class="student-stat-label">Schedule</div><div class="student-stat-value">${esc(e.schedule||'Mon, Tue, Wed,...')}</div></div>
-        <div class="student-stat"><div class="student-stat-label">Joining Date</div><div class="student-stat-value">${esc(joining)}</div></div>
+        <div class="student-stat"><div class="student-stat-label">Schedule</div><div class="student-schedule-days" aria-label="Saturday to Thursday, Friday holiday"><span class="student-day">Sat</span><span class="student-day">Sun</span><span class="student-day">Mon</span><span class="student-day">Tue</span><span class="student-day">Wed</span><span class="student-day">Thu</span></div><span class="student-schedule-note">Friday holiday</span></div>
+        <div class="student-stat"><div class="student-stat-label">Joining Date</div><div class="student-joining-date"><span class="cal">▣</span><span>${esc(joining)}</span></div></div>
       </div>
     </div>
     <div class="student-tabs">
@@ -2024,7 +2275,8 @@ function openStudentDetail(ref){
     <div class="student-feature-card" id="studentPaymentFeature"><div class="student-feature-icon">▣</div><div class="student-feature-text"><b>Payment</b><span>View history &amp; pay dues • Due ${due}</span></div><div class="student-feature-chevron">›</div></div>
     <div class="student-feature-card" id="studentAttendanceFeature"><div class="student-feature-icon att">✓</div><div class="student-feature-text"><b>Attendance</b><span>Mark / View log history</span></div><div class="student-feature-chevron">›</div></div>
     <div class="student-feature-card" id="studentChangeFeature"><div class="student-feature-icon" style="background:#F5EFFD;color:#8B5CF6;">⇄</div><div class="student-feature-text"><b>Change Batch</b><span>Transfer batch / personal</span></div><div class="student-feature-chevron">›</div></div>
-  `;
+`;
+  document.getElementById('studentPaymentFeature').addEventListener('click',()=>paymentHistoryOpen(ref));
   document.querySelectorAll('.student-tab').forEach(tab=>tab.addEventListener('click',()=>{
     document.querySelectorAll('.student-tab').forEach(t=>t.classList.toggle('active',t===tab));
     if(tab.dataset.tab==='attendance') openAttendance();
@@ -2035,94 +2287,316 @@ function openStudentDetail(ref){
     const next=studentType(e)==='personal'?'batch':'personal';
     e.studentType=next;saveSoon();openStudentDetail(ref);showToast(`Changed to ${next}`);
   });
+  document.getElementById('studentDetailPrev').addEventListener('click',navigateStudentDetailPrev);
+  document.getElementById('studentDetailNext').addEventListener('click',navigateStudentDetailNext);
 }
 document.getElementById('studentDetailBack').addEventListener('click',()=>{
-  studentDetail.classList.remove('open');studentsOverlay.classList.add('open');studentSearchRender();
+  tfCloseOverlay('studentDetail');
+  studentsOverlay.classList.add('open');
+  studentSearchRender();
 });
 
-/* ---------------- Attendance ---------------- */
-const attendanceOverlay = document.getElementById('attendanceOverlay');
-const attendanceDateEl = document.getElementById('attendanceDate');
-const attendanceListEl = document.getElementById('attendanceList');
-const attendanceSummaryEl = document.getElementById('attendanceSummary');
-const attendanceDayHintEl = document.getElementById('attendanceDayHint');
-const attendanceFridayNoteEl = document.getElementById('attendanceFridayNote');
 
-function attendanceIsoToday(){
-  const d=new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+/* One-step Previous / Next navigation */
+function sortedUniqueStudentRefs(){
+  const seen=new Set(), out=[];
+  allStudentRefs().slice().sort((a,b)=>String(a.e.name||'').localeCompare(String(b.e.name||''),undefined,{sensitivity:'base'})).forEach(r=>{
+    const k=String(r.e.name||'').trim().toLocaleLowerCase();
+    if(k&&!seen.has(k)){seen.add(k);out.push(r);}
+  });
+  return out;
 }
-function attendanceDmyFromIso(iso){ return isoToDmy(iso); }
-function attendanceStore(){ if(!state.attendance || typeof state.attendance!=='object') state.attendance={}; return state.attendance; }
-function attendanceIsFriday(iso){
-  if(!iso) return false;
-  const d=new Date(iso+'T00:00:00');
-  return d.getDay()===5;
+function navigateStudentDetailNext(){
+  if(!selectedStudentRef)return;
+  paymentHistoryOpen(selectedStudentRef);
 }
-function attendanceStatusFor(entryId, iso){
-  const store=attendanceStore();
-  const day=store[iso] || {};
-  return day[entryId] || (attendanceIsFriday(iso)?'holiday':'');
+function navigateStudentDetailPrev(){
+  tfCloseOverlay('studentDetail');
+  studentsOverlay.classList.add('open');
+  studentSearchRender();
 }
-function setAttendanceStatus(entryId, iso, status){
-  const store=attendanceStore();
-  if(!store[iso]) store[iso]={};
-  store[iso][entryId]=status;
-  saveSoon();
-  renderAttendance();
+function findFirstPaymentMonth(name,year){
+  for(let i=0;i<12;i++){ if(studentMonthRecords(name,year,i).length) return i; }
+  return Math.max(0,Math.min(11,new Date().getMonth()));
 }
-function renderAttendance(){
-  if(!state) return;
-  const iso=attendanceDateEl.value || attendanceIsoToday();
-  if(attendanceDateEl.value!==iso) attendanceDateEl.value=iso;
-  const d=new Date(iso+'T00:00:00');
-  const dayName=d.toLocaleDateString([], {weekday:'long'});
-  attendanceDayHintEl.textContent=`${dayName} • ${attendanceDmyFromIso(iso)}`;
-  const friday=attendanceIsFriday(iso);
-  attendanceFridayNoteEl.style.display=friday?'block':'none';
-
-  const part=state.parts[currentPartIdx];
-  const entries=(part && part.entries)||[];
-  let present=0,absent=0,holiday=0;
-  entries.forEach(e=>{const st=attendanceStatusFor(e.id,iso); if(st==='present')present++; else if(st==='absent')absent++; else if(st==='holiday')holiday++;});
-  attendanceSummaryEl.innerHTML=`
-    <div class="attendance-count present"><div class="n">${present}</div><div class="l">Present</div></div>
-    <div class="attendance-count absent"><div class="n">${absent}</div><div class="l">Absent</div></div>
-    <div class="attendance-count holiday"><div class="n">${holiday}</div><div class="l">Holiday</div></div>`;
-
-  attendanceListEl.innerHTML='';
-  if(!entries.length){
-    attendanceListEl.innerHTML='<div class="attendance-empty">No students in this part yet.</div>';
-    return;
+function navigatePaymentHistoryNext(){
+  if(!selectedStudentRef)return;
+  const year=Number(document.getElementById('paymentHistoryYearSelect')?.value)||new Date().getFullYear();
+  openPaymentDetailsForMonth(selectedStudentRef.e.name,year,findFirstPaymentMonth(selectedStudentRef.e.name,year));
+}
+function navigatePaymentHistoryPrev(){
+  paymentHistoryClose();
+}
+function navigatePaymentDetailPrev(){
+  closePaymentDetails();
+}
+function navigatePaymentDetailNext(){
+  const refs=sortedUniqueStudentRefs();
+  const curName=String(selectedStudentRef?.e?.name||'').trim().toLocaleLowerCase();
+  const i=refs.findIndex(r=>String(r.e.name||'').trim().toLocaleLowerCase()===curName);
+  const next=refs[(i+1)%refs.length];
+  if(next){
+    const year=Number(document.getElementById('paymentHistoryYearSelect')?.value)||new Date().getFullYear();
+    closePaymentDetails();
+    paymentHistoryOpen(next,year);
   }
-  entries.forEach((e,i)=>{
-    const st=attendanceStatusFor(e.id,iso);
-    const row=document.createElement('div');
-    row.className='attendance-row';
-    row.innerHTML=`
-      <div class="attendance-row-top">
-        <div class="attendance-no">${i+1}</div>
-        <div class="attendance-name">${esc(e.name||'Unnamed')}</div>
-        <div class="attendance-current ${st||'unmarked'}">${st?st.charAt(0).toUpperCase()+st.slice(1):'Not marked'}</div>
-      </div>
-      <div class="attendance-actions">
-        <button class="attendance-btn present ${st==='present'?'active':''}" data-status="present">✓ Present</button>
-        <button class="attendance-btn absent ${st==='absent'?'active':''}" data-status="absent">✕ Absent</button>
-        <button class="attendance-btn holiday ${st==='holiday'?'active':''}" data-status="holiday">● Holiday</button>
-      </div>`;
-    row.querySelectorAll('.attendance-btn').forEach(btn=>btn.addEventListener('click',()=>setAttendanceStatus(e.id,iso,btn.dataset.status)));
-    attendanceListEl.appendChild(row);
+}
+
+/* ---------------- Student Payment History ---------------- */
+const paymentHistoryOverlay = document.getElementById('paymentHistoryOverlay');
+const paymentHistoryBody = document.getElementById('paymentHistoryBody');
+function paymentHistoryOpen(ref){
+  selectedStudentRef=ref;
+  if(tfOverlayStack[tfOverlayStack.length-1]!=='paymentHistory') tfPushOverlay('paymentHistory');
+  studentDetail.classList.remove('open');
+  paymentHistoryOverlay.classList.add('open');
+  renderPaymentHistory(ref.e);
+}
+function paymentHistoryClose(){
+  if(tfOverlayStack.includes('paymentHistory')){ tfCloseOverlay('paymentHistory'); return; }
+  paymentHistoryOverlay.classList.remove('open');
+  studentDetail.classList.add('open');
+}
+function paymentHistoryYears(name){
+  const currentYear=new Date().getFullYear();
+  let firstYear=currentYear;
+  allStudentRefs().forEach(r=>{
+    if(String(r.e.name||'').trim().toLocaleLowerCase()===String(name||'').trim().toLocaleLowerCase()){
+      const d=dmyToIso(r.e.start||'');
+      if(d) firstYear=Math.min(firstYear,Number(d.slice(0,4)));
+      const c=dmyToIso(r.e.crDate||'');
+      if(c) firstYear=Math.min(firstYear,Number(c.slice(0,4)));
+      const pd=dmyToIso(r.e.paidDate||'');
+      if(pd) firstYear=Math.min(firstYear,Number(pd.slice(0,4)));
+    }
+  });
+  const years=[];
+  for(let y=firstYear;y<=currentYear;y++) years.push(y);
+  return years;
+}
+function studentMonthRecords(name,year,monthIndex){
+  const key=String(name||'').trim().toLocaleLowerCase();
+  return allStudentRefs().filter(r=>String(r.e.name||'').trim().toLocaleLowerCase()===key).filter(r=>{
+    const iso=dmyToIso(r.e.start||'');
+    return iso && Number(iso.slice(0,4))===year && Number(iso.slice(5,7))===monthIndex+1;
   });
 }
-function openAttendance(){
-  sigmaMenu.classList.remove('open');
-  attendanceOverlay.classList.add('open');
-  attendanceDateEl.value=attendanceIsoToday();
-  renderAttendance();
+function paymentMonthStatusForStudent(name,monthIndex,year){
+  const records=studentMonthRecords(name,year,monthIndex);
+  if(records.length){
+    const fee=records.reduce((sum,r)=>sum+(Number(r.e.fee)||0),0);
+    const paid=records.reduce((sum,r)=>sum+(r.e.paid ? (Number(r.e.paidAmount)>0?Number(r.e.paidAmount):Number(r.e.fee)||0) : (Number(r.e.paidAmount)||0)),0);
+    if(paid>=fee && fee>0) return 'paid';
+    if(paid>0) return 'due';
+    return 'due';
+  }
+  const now=new Date();
+  const joinRefs=allStudentRefs().filter(r=>String(r.e.name||'').trim().toLocaleLowerCase()===String(name||'').trim().toLocaleLowerCase());
+  const starts=joinRefs.map(r=>dmyToIso(r.e.start||'')).filter(Boolean).sort();
+  if(starts.length && new Date(year,monthIndex,1)<new Date(Number(starts[0].slice(0,4)),Number(starts[0].slice(5,7))-1,1)) return 'na';
+  if(year>now.getFullYear() || (year===now.getFullYear() && monthIndex>now.getMonth())) return 'future';
+  return 'due';
 }
-document.getElementById('sigmaAttendance').addEventListener('click',openAttendance);
-document.getElementById('attendanceBack').addEventListener('click',()=>attendanceOverlay.classList.remove('open'));
-attendanceDateEl.addEventListener('change',renderAttendance);
+function paymentHistoryOpen(ref, selectedYear){
+  selectedStudentRef=ref;
+  tfPushOverlay('paymentHistory');
+  studentDetail.classList.remove('open');
+  paymentHistoryOverlay.classList.add('open');
+  renderPaymentHistory(ref.e, selectedYear || new Date().getFullYear());
+}
+function paymentHistoryClose(){
+  tfCloseOverlay('paymentHistory');
+  paymentHistoryOverlay.classList.remove('open');
+  studentDetail.classList.add('open');
+}
+function renderPaymentHistory(e, selectedYear){
+  const name=e.name||'Unnamed';
+  const years=paymentHistoryYears(name);
+  const year=years.includes(Number(selectedYear))?Number(selectedYear):years[years.length-1];
+  const allRecords=allStudentRefs().filter(r=>String(r.e.name||'').trim().toLocaleLowerCase()===String(name).trim().toLocaleLowerCase());
+  const connectedFee=studentConnectedFee(name,e.fee);
+  const fee=connectedFee;
+  const paidValue=allRecords.reduce((sum,r)=>sum+(r.e.paid ? (Number(r.e.paidAmount)>0?Number(r.e.paidAmount):Number(r.e.fee)||0) : (Number(r.e.paidAmount)||0)),0);
+  const totalFee=allRecords.reduce((sum,r)=>sum+(Number(r.e.fee)||0),0);
+  const totalDue=Math.max(0,totalFee-paidValue);
+  const typeLabel=studentTypeLabel(e);
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let html=`
+    <div class="payment-history-profile">
+      <div class="payment-history-profile-top"><div class="payment-history-avatar">${esc(studentInitials(name))}</div><div><div class="payment-history-name">${esc(name)}</div><div class="payment-history-badge">♟ ${esc(typeLabel)}</div></div></div>
+      <div class="payment-history-divider"></div>
+      <div class="payment-history-meta"><div><div class="payment-history-meta-label">▤ Monthly Fees</div><div class="payment-history-meta-value">${cur()}${fee}</div></div><div><div class="payment-history-meta-label">▦ Joining Date</div><div class="payment-history-meta-value">${esc((studentJoiningRef(name,e)?.e?.start)||e.start||'—')}</div></div></div>
+    </div>
+    <div class="payment-history-year">
+      <div class="payment-history-year-label">Academic Year</div>
+      <div class="payment-history-year-nav">
+        <button class="payment-history-year-btn prev" id="paymentHistoryYearPrev" ${years.indexOf(year)<=0?'disabled':''}>← Previous</button>
+        <div class="payment-history-year-current">${year}</div>
+        <button class="payment-history-year-btn next" id="paymentHistoryYearNext" ${years.indexOf(year)>=years.length-1?'disabled':''}>Next →</button>
+      </div>
+    </div>
+    <div class="payment-month-grid">`;
+  months.forEach((month,i)=>{
+    const status=paymentMonthStatusForStudent(name,i,year);
+    const records=studentMonthRecords(name,year,i);
+    let icon='⊘',label='N/A';
+    if(status==='future'){icon='▣';label='Future';}
+    else if(status==='paid'){icon='✓';label='Paid';}
+    else if(status==='due'){icon=records.some(r=>Number(r.e.paidAmount)>0||r.e.paid)?'₹':'₹';label=records.some(r=>r.e.paid)?'Paid':'Due';}
+    const cls=`payment-month ${status}${records.length?' clickable':''}`;
+    html+=`<div class="${cls}" data-year="${year}" data-month="${i}"><div class="payment-month-name">${month}</div><div class="payment-month-icon">${icon}</div><div class="payment-month-status">${label}</div></div>`;
+  });
+  html+=`</div><div class="payment-history-totals"><div class="payment-total paid"><small>Total Paid</small><strong>${cur()}${paidValue}</strong></div><div class="payment-total due"><small>Total Due</small><strong>${cur()}${totalDue}</strong></div></div><div class="payment-breakdown"><div class="payment-breakdown-item paid"><small>Fully Paid</small><strong>${allRecords.filter(r=>r.e.paid).length}</strong></div><div class="payment-breakdown-item partial"><small>Partial</small><strong>${allRecords.filter(r=>!r.e.paid&&Number(r.e.paidAmount)>0).length}</strong></div><div class="payment-breakdown-item unpaid"><small>Unpaid</small><strong>${allRecords.filter(r=>!r.e.paid&&Number(r.e.paidAmount||0)===0).length}</strong></div></div>
+`;
+  paymentHistoryBody.innerHTML=html;
+  document.getElementById('paymentHistoryYearPrev')?.addEventListener('click',()=>{ const i=years.indexOf(year); if(i>0) renderPaymentHistory(e,years[i-1]); });
+  document.getElementById('paymentHistoryYearNext')?.addEventListener('click',()=>{ const i=years.indexOf(year); if(i<years.length-1) renderPaymentHistory(e,years[i+1]); });
+  paymentHistoryBody.querySelectorAll('.payment-month.clickable').forEach(card=>card.addEventListener('click',()=>openPaymentDetailsForMonth(name,year,Number(card.dataset.month))));
+  document.getElementById('paymentHistoryPrev')?.addEventListener('click',navigatePaymentHistoryPrev);
+  document.getElementById('paymentHistoryNext')?.addEventListener('click',navigatePaymentHistoryNext);
+}
+
+const paymentDetailOverlay=document.getElementById('paymentDetailOverlay');
+const paymentDetailBody=document.getElementById('paymentDetailBody');
+function closePaymentDetails(){
+  if(tfOverlayStack.includes('paymentDetail')){ tfCloseOverlay('paymentDetail'); return; }
+  paymentDetailOverlay.classList.remove('open');
+  paymentDetailOverlay.setAttribute('aria-hidden','true');
+}
+function openPaymentDetailsForMonth(name,year,monthIndex){
+  const records=studentMonthRecords(name,year,monthIndex);
+  const fee=records.reduce((sum,r)=>sum+(Number(r.e.fee)||0),0);
+  const paid=records.reduce((sum,r)=>sum+(r.e.paid?(Number(r.e.paidAmount)>0?Number(r.e.paidAmount):Number(r.e.fee)||0):(Number(r.e.paidAmount)||0)),0);
+  const status=paid>=fee&&fee>0?'Fully Paid':paid>0?'Partial':'Unpaid';
+  const monthName=['January','February','March','April','May','June','July','August','September','October','November','December'][monthIndex];
+  const studentRefForPayment=allStudentRefs().find(r=>String(r.e.name||'').trim().toLocaleLowerCase()===String(name||'').trim().toLocaleLowerCase());
+  const connectedBatch=studentTypeLabel(studentRefForPayment?.e||{}) || studentTypeLabel(records[0]?.e||{}) || '—';
+  let html=`<div class="payment-detail-summary"><div class="payment-detail-row"><span>Student Name</span><strong>${esc(name)}</strong></div><div class="payment-detail-row"><span>Batch</span><strong>${esc(connectedBatch)}</strong></div><div class="payment-detail-row"><span>Month Status</span><strong>${status}</strong></div><hr><div class="payment-detail-row"><span>Total Fee</span><strong>${cur()}${fee}</strong></div><div class="payment-detail-row"><span>Total Paid</span><strong style="color:#35B96B">${cur()}${paid}</strong></div></div><div class="payment-detail-trans">Payment History (${records.reduce((n,r)=>n+(r.e.paid?1:0),0)} Transaction${records.filter(r=>r.e.paid).length===1?'':'s'})</div>`;
+  const paidRecords=records.filter(r=>r.e.paid);
+  if(!paidRecords.length) html+=`<div class="payment-detail-empty">No payment transaction for ${monthName} ${year}.</div>`;
+  paidRecords.forEach((r,idx)=>{
+    const amount=Number(r.e.paidAmount)>0?Number(r.e.paidAmount):Number(r.e.fee)||0;
+    html+=`<div class="payment-detail-card"><div class="payment-detail-card-top"><b>${amount>=Number(r.e.fee||0)?'Full Payment':'Partial Payment'}</b><span class="payment-detail-amount">${cur()}${amount}</span></div><div class="payment-detail-card-meta"><span>📅 ${esc(r.e.crDate||r.e.paidDate||r.e.start||'—')}</span><span>💵 Cash</span></div><div class="payment-detail-actions"><button class="payment-edit" data-edit-index="${idx}">✎ Edit</button><button class="payment-delete" data-delete-index="${idx}">♜ Delete</button></div></div>`;
+  });
+  paymentDetailBody.innerHTML=html;
+  paymentDetailOverlay.classList.add('open');paymentDetailOverlay.setAttribute('aria-hidden','false');
+  tfPushOverlay('paymentDetail');
+  paidRecords.forEach((r,idx)=>{
+    paymentDetailBody.querySelector(`[data-edit-index="${idx}"]`)?.addEventListener('click',()=>editPaymentRecord(r,name,year,monthIndex));
+    paymentDetailBody.querySelector(`[data-delete-index="${idx}"]`)?.addEventListener('click',()=>deletePaymentRecord(r,name,year,monthIndex));
+  });
+}
+function editPaymentRecord(ref,name,year,monthIndex){
+  const current=Number(ref.e.paidAmount)>0?Number(ref.e.paidAmount):Number(ref.e.fee)||0;
+  const amount=prompt('Payment amount',String(current));
+  if(amount===null)return;
+  const n=Number(amount); if(!Number.isFinite(n)||n<0){showToast('Invalid payment amount');return;}
+  const date=prompt('Payment date (DD/MM/YYYY)',String(ref.e.crDate||ref.e.paidDate||ref.e.start||''));
+  if(date===null)return;
+  ref.e.paid=true;ref.e.paidAmount=n;ref.e.crDate=date.trim();
+  saveSoon();closePaymentDetails();renderPaymentHistory(ref.e,year);showToast('Payment updated');
+}
+function deletePaymentRecord(ref,name,year,monthIndex){
+  if(!confirm('Delete this payment?'))return;
+  ref.e.paid=false;ref.e.paidAmount=0;ref.e.crDate='';
+  saveSoon();closePaymentDetails();renderPaymentHistory(ref.e,year);showToast('Payment deleted');
+}
+document.getElementById('paymentDetailClose').addEventListener('click',closePaymentDetails);
+document.getElementById('paymentDetailCloseBottom').addEventListener('click',closePaymentDetails);
+paymentDetailOverlay.addEventListener('click',ev=>{if(ev.target===paymentDetailOverlay)closePaymentDetails();});
+document.getElementById('paymentHistoryBack').addEventListener('click',paymentHistoryClose);
+
+/* ---------------- Attendance / Student Details ---------------- */
+const attendanceOverlay=document.getElementById('attendanceOverlay');
+const attendanceProfileEl=document.getElementById('attendanceProfile');
+const attendanceMonthSelect=document.getElementById('attendanceMonthSelect');
+const attendanceCalendarArea=document.getElementById('attendanceCalendarArea');
+let attendanceView='month', attendanceYear=new Date().getFullYear(), attendanceMonth=new Date().getMonth();
+function attendanceIsoToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function attendanceStore(){if(!state.attendance||typeof state.attendance!=='object')state.attendance={};return state.attendance;}
+function attendanceStatusFor(id,iso){const day=attendanceStore()[iso]||{},saved=day[id];const d=new Date(iso+'T00:00:00');if(d.getDay()===5){if(saved==='present'||saved==='absent')return saved;return 'holiday';}if(saved)return saved;return '';}
+function setAttendanceStatus(id,iso,status){const store=attendanceStore();if(!store[iso])store[iso]={};store[iso][id]=status;saveSoon();renderAttendanceStudent();}
+function monthName(i){return ['January','February','March','April','May','June','July','August','September','October','November','December'][i];}
+function attendanceJoiningIso(e){const r=studentJoiningRef(e.name,selectedStudentRef);return dmyToIso(r?.e?.start||e.start||'')||'';}
+function attendanceFee(e){const f=studentConnectedFee(e.name,e.fee);return f===0&&(e.fee==null||e.fee==='')?'—':`${cur()}${f}`;}
+function attendanceProfileRender(e){const join=studentJoiningRef(e.name,selectedStudentRef)?.e?.start||e.start||'—';const label=studentTypeLabel(e)||'';attendanceProfileEl.innerHTML=`<div class="attendance-profile-card"><div class="attendance-profile-top"><div class="attendance-avatar">${esc(studentInitials(e.name))}</div><div style="min-width:0"><div class="attendance-profile-name">${esc(e.name||'Unnamed')}</div>${label?`<div class="attendance-profile-badge">♟ ${esc(label)}</div>`:''}</div></div><div class="attendance-profile-stats three"><div class="attendance-profile-stat"><div class="attendance-profile-stat-label">Monthly Fees</div><div class="attendance-profile-stat-value">${attendanceFee(e)}</div></div><div class="attendance-profile-stat schedule-stat"><div class="attendance-profile-stat-label">Schedule</div><div class="student-schedule-days" aria-label="Saturday to Thursday, Friday holiday"><span class="student-day">Sat</span><span class="student-day">Sun</span><span class="student-day">Mon</span><span class="student-day">Tue</span><span class="student-day">Wed</span><span class="student-day">Thu</span></div><span class="student-schedule-note">Friday holiday</span></div><div class="attendance-profile-stat"><div class="attendance-profile-stat-label">Joining Date</div><div class="attendance-profile-stat-value">▦ ${esc(join)}</div></div></div></div>`;}
+function attendanceRecordDates(id,y,m){const out=[];Object.keys(attendanceStore()).forEach(iso=>{const d=new Date(iso+'T00:00:00');if(Number.isNaN(d.getTime())||d.getFullYear()!==y||(m!=null&&d.getMonth()!==m))return;const st=attendanceStatusFor(id,iso);if(st)out.push({iso,status:st});});return out.sort((a,b)=>b.iso.localeCompare(a.iso));}
+function attendanceCalendarHtml(e,y,m){const id=e.id, first=new Date(y,m,1),days=new Date(y,m+1,0).getDate(),today=attendanceIsoToday(),join=attendanceJoiningIso(e),offset=(first.getDay()+6)%7;let h=`<div class="attendance-calendar-card"><div class="attendance-section-label">Monthly Calendar</div><div class="attendance-week"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="attendance-calendar">`;for(let i=0;i<offset;i++)h+='<div class="attendance-day-cell blank"></div>';for(let day=1;day<=days;day++){const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,d=new Date(iso+'T00:00:00'),before=join&&iso<join, future=iso>today,st=attendanceStatusFor(id,iso);let cls='attendance-day-cell';if(before)cls+=' future';else if(st==='present')cls+=' present';else if(st==='absent')cls+=' absent';else if(st==='holiday')cls+=' holiday';else if(future)cls+=' future';else cls+=' unrecorded';if(iso===today)cls+=' today';const mark=st==='present'?'Present':st==='absent'?'Absent':st==='holiday'?'Holiday':before?'N/A':future?'Future':'UNREC';h+=`<button class="${cls}" data-att-iso="${iso}" title="${st==='holiday'?'Holiday • Friday holiday':mark}"><span>${day}</span>${st==='present'||st==='absent'||st==='holiday'?'':'<span class="att-mark">'+mark+'</span>'}</button>`;}h+=`</div><div class="attendance-legend"><span><i></i>Scheduled</span><span><i class="p"></i>Present</span><span><i class="a"></i>Absent</span><span><i class="h"></i>Holiday</span><span><i class="u"></i>Unrecorded</span></div></div>`;return h;}
+function attendanceStatsHtml(e,y,m){const dates=attendanceRecordDates(e.id,y,m);let p=0,a=0,h=0;dates.forEach(r=>{if(r.status==='present')p++;else if(r.status==='absent')a++;else if(r.status==='holiday')h++;});const taken=p+a,avg=taken?((p/taken)*100).toFixed(1):'0.0';let html=`<div class="attendance-stat-grid three"><div class="attendance-stat-card blue"><strong>${h}</strong><span>Holiday</span></div><div class="attendance-stat-card green"><strong>${avg}%</strong><span>Avg Attendance</span></div><div class="attendance-stat-card red"><strong>${a}</strong><span>Absent Counts</span></div></div><div class="attendance-log-card"><div class="attendance-log-title">Class Log History</div>`;if(!dates.length)html+='<div style="text-align:center;color:#9A9A9F;font-size:12px;padding:18px 4px">No attendance records for this month.</div>';dates.slice(0,12).forEach(r=>{const d=new Date(r.iso+'T00:00:00');html+=`<div class="attendance-log-row"><div><div class="attendance-log-date">${d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div><div class="attendance-log-sub">Attendance taken</div></div><div class="attendance-log-status ${r.status==='absent'?'absent':r.status==='holiday'?'holiday':''}">${r.status[0].toUpperCase()+r.status.slice(1)}</div></div>`});return html+'</div>'}
+function attendanceYearDayStatus(e,iso,y){
+  const store=attendanceStore(), explicit=store[iso]&&store[iso][e.id];
+  const d=new Date(iso+'T00:00:00');
+  if(d.getDay()===5){
+    if(explicit==='present'||explicit==='absent') return explicit;
+    return 'holiday';
+  }
+  if(explicit) return explicit;
+  const today=attendanceIsoToday(), join=attendanceJoiningIso(e);
+  if(join && iso<join) return 'before';
+  if(iso>today) return 'scheduled';
+  return 'unrecorded';
+}
+function attendanceYearMonthHtml(e,y,m){
+  const days=new Date(y,m+1,0).getDate(),today=attendanceIsoToday();
+  let h=`<div class="attendance-year-month"><div class="attendance-year-month-title">${monthName(m)}</div><div class="attendance-year-days">`;
+  for(let day=1;day<=days;day++){
+    const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const st=attendanceYearDayStatus(e,iso,y),cls=`attendance-year-day ${st}${iso===today?' today':''}`;
+    h+=`<button class="${cls}" data-att-iso="${iso}" title="${st}">${day}</button>`;
+  }
+  return h+'</div></div>';
+}
+function attendanceYearHtml(e,y){
+  const dates=attendanceRecordDates(e.id,y,null);
+  let p=0,a=0,h=0,postponed=0;
+  dates.forEach(r=>{
+    if(r.status==='present')p++;
+    else if(r.status==='absent')a++;
+    else if(r.status==='holiday')h++;
+    else if(r.status==='postponed')postponed++;
+  });
+  const taken=p+a,avg=taken?((p/taken)*100).toFixed(1):'0.0';
+  const explicit=Object.keys(attendanceStore()).filter(iso=>{
+    const d=new Date(iso+'T00:00:00');
+    return d.getFullYear()===y && attendanceStore()[iso] && attendanceStore()[iso][e.id];
+  });
+  const holidayDates=explicit.filter(iso=>attendanceStore()[iso][e.id]==='holiday');
+  const postponedDates=explicit.filter(iso=>attendanceStore()[iso][e.id]==='postponed');
+  let months='';
+  for(let m=0;m<12;m++) months+=attendanceYearMonthHtml(e,y,m);
+  return `<div class="attendance-year-wrap">
+    <div class="attendance-year-switch">
+      <button class="attendance-year-arrow" id="attendanceYearPrev" aria-label="Previous year">‹</button>
+      <div class="attendance-year-label"><span class="cal">▦</span>${y} Attendance</div>
+      <button class="attendance-year-arrow" id="attendanceYearNext" aria-label="Next year">›</button>
+    </div>
+    <div class="attendance-year-calendar-card">
+      <div class="attendance-year-heading">Yearly Attendance Calendar</div>
+      <div class="attendance-year-note">Class dates for ${y} by month.</div>
+      ${months}
+      <div class="attendance-year-legend">
+        <span><i></i>Scheduled</span>
+        <span><i class="yp"></i>Present</span>
+        <span><i class="ya"></i>Absent</span>
+        <span><i class="yh"></i>Holiday</span>
+        <span><i class="yu"></i>Unrecorded</span>
+      </div>
+    </div>
+    <div class="attendance-year-summary-title">Yearly Summary (${y})</div>
+    <div class="attendance-year-summary"><div class="attendance-stat-card green"><strong>${p}</strong><span>Present</span></div>
+      <div class="attendance-stat-card red"><strong>${a}</strong><span>Absent</span></div>
+      <div class="attendance-stat-card blue"><strong>${avg}%</strong><span>Attendance Percentage</span></div>
+    </div>
+    <div class="attendance-year-links">
+      <button class="attendance-year-link" data-year-detail="postponed"><span class="gold">◉</span><span style="flex:1;text-align:left;margin-left:6px">Yearly Postponed Class Dates</span><span>${postponedDates.length} Dates <span class="arrow">›</span></span></button>
+      <button class="attendance-year-link" data-year-detail="holiday"><span class="blue">⊗</span><span style="flex:1;text-align:left;margin-left:6px">Yearly Holiday Dates</span><span>${holidayDates.length} Dates <span class="arrow">›</span></span></button>
+    </div>
+  </div>`;
+}
+function attendanceBottomNavHtml(){return `<div class="attendance-bottom-nav"><button class="attendance-nav-item"><b>⌂</b>Dashboard</button><button class="attendance-nav-item active"><b>♟</b>Students</button><button class="attendance-nav-item"><b>▢</b>LogBook</button><button class="attendance-nav-item"><b>□</b>Batches</button><button class="attendance-nav-item"><b>▥</b>Reports</button></div>`;}
+function renderAttendanceStudent(){const ref=selectedStudentRef;if(!ref)return;const e=ref.e;attendanceProfileRender(e);if(attendanceView==='month'){attendanceMonthSelect.style.display='block';attendanceMonthSelect.innerHTML='';for(let i=0;i<12;i++){const o=document.createElement('option');o.value=i;o.textContent=`${monthName(i)} ${attendanceYear}`;o.selected=i===attendanceMonth;attendanceMonthSelect.appendChild(o);}attendanceCalendarArea.innerHTML=attendanceCalendarHtml(e,attendanceYear,attendanceMonth)+attendanceStatsHtml(e,attendanceYear,attendanceMonth)+attendanceBottomNavHtml();}else{attendanceMonthSelect.style.display='none';attendanceCalendarArea.innerHTML=attendanceYearHtml(e,attendanceYear)+attendanceBottomNavHtml();document.getElementById('attendanceYearPrev')?.addEventListener('click',()=>{attendanceYear--;renderAttendanceStudent();});document.getElementById('attendanceYearNext')?.addEventListener('click',()=>{attendanceYear++;renderAttendanceStudent();});document.querySelectorAll('[data-year-detail]').forEach(btn=>btn.addEventListener('click',()=>{const kind=btn.dataset.yearDetail;const items=Object.keys(attendanceStore()).filter(iso=>{const d=new Date(iso+'T00:00:00');return d.getFullYear()===attendanceYear&&attendanceStore()[iso]&&attendanceStore()[iso][e.id]===kind;});showToast(items.length?`${items.length} ${kind} date${items.length===1?'':'s'} in ${attendanceYear}`:`No ${kind} dates in ${attendanceYear}`);}));}attendanceCalendarArea.querySelectorAll('[data-att-iso]').forEach(btn=>btn.addEventListener('click',()=>{const iso=btn.dataset.attIso;if(iso>attendanceIsoToday())return;const d=new Date(iso+'T00:00:00');if(d.getDay()===5){const curSt=attendanceStatusFor(e.id,iso);if(curSt==='holiday'){showToast(`Holiday • ${d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`);}else{setAttendanceStatus(e.id,iso,'holiday');}return;}const curSt=attendanceStatusFor(e.id,iso),next=curSt==='present'?'absent':curSt==='absent'?'present':'present';setAttendanceStatus(e.id,iso,next);}));}
+function openAttendance(){if(!selectedStudentRef){showToast('Select a student first');return;}attendanceOverlay.classList.add('open');tfPushOverlay('attendance');attendanceView='month';attendanceYear=new Date().getFullYear();attendanceMonth=new Date().getMonth();document.querySelectorAll('.attendance-view-tab').forEach(t=>t.classList.toggle('active',t.dataset.attView==='month'));renderAttendanceStudent();}
+document.getElementById('sigmaAttendance')?.addEventListener('click',openAttendance);document.getElementById('attendanceBack').addEventListener('click',()=>tfCloseOverlay('attendance'));document.getElementById('attendanceSettings')?.addEventListener('click',()=>openStudentForm(selectedStudentRef));attendanceMonthSelect.addEventListener('change',()=>{attendanceMonth=Number(attendanceMonthSelect.value)||0;renderAttendanceStudent();});document.querySelectorAll('.attendance-view-tab').forEach(tab=>tab.addEventListener('click',()=>{attendanceView=tab.dataset.attView;document.querySelectorAll('.attendance-view-tab').forEach(t=>t.classList.toggle('active',t===tab));renderAttendanceStudent();}));
 
 const sigmaMenu = document.getElementById('sigmaMenu');
 
@@ -2447,5 +2921,165 @@ async function init(){
 
 startAuthFlow();
 </script>
+
+<style id="exact-student-attendance-card-copy">
+/* Exact compact Student Details info row */
+.attendance-profile-stats.three{
+  grid-template-columns:1fr 1.45fr 1.12fr !important;
+  align-items:start;
+  gap:0 !important;
+  margin-top:14px !important;
+  padding-top:12px !important;
+}
+.attendance-profile-stats.three .attendance-profile-stat{
+  min-width:0;
+  min-height:72px;
+  padding:0 10px;
+}
+.attendance-profile-stats.three .attendance-profile-stat + .attendance-profile-stat{
+  border-left:2px solid #E5E5E8;
+}
+.attendance-profile-stats.three .attendance-profile-stat-label{
+  font-size:15px !important;
+  line-height:1.15;
+  color:#8A8A8F;
+  font-weight:800;
+  white-space:nowrap;
+  text-align:center;
+}
+.attendance-profile-stats.three .attendance-profile-stat-value{
+  font-size:20px !important;
+  line-height:1.1;
+  margin-top:8px;
+  font-weight:900;
+  text-align:center;
+}
+.attendance-profile-stats.three .schedule-stat .student-schedule-days{
+  gap:3px !important;
+  margin-top:8px !important;
+}
+.attendance-profile-stats.three .schedule-stat .student-day{
+  font-size:12px !important;
+  padding:7px 5px !important;
+  min-width:38px;
+  border-radius:11px !important;
+  box-sizing:border-box;
+}
+.attendance-profile-stats.three .schedule-stat .student-schedule-note{
+  font-size:14px !important;
+  margin-top:7px !important;
+  text-align:center;
+}
+@media(max-width:390px){
+  .attendance-profile-stats.three{grid-template-columns:1fr 1.28fr 1.32fr !important;}
+  .attendance-profile-stats.three .attendance-profile-stat{padding:0 5px;min-height:66px;}
+  .attendance-profile-stats.three .attendance-profile-stat-label{font-size:10px !important;}
+  .attendance-profile-stats.three .attendance-profile-stat-value{font-size:16px !important;margin-top:6px;}
+  .attendance-profile-stats.three .schedule-stat .student-schedule-days{gap:1px !important;margin-top:6px !important;}
+  .attendance-profile-stats.three .schedule-stat .student-day{font-size:8px !important;min-width:0 !important;width:28px !important;padding:5px 1px !important;border-radius:8px !important;}
+  .attendance-profile-stats.three .schedule-stat .student-schedule-note{font-size:9px !important;margin-top:5px !important;}
+}
+
+/* FINAL FIX: exact 3-column header — fee | schedule | joining date */
+.attendance-profile-stats.three{
+  grid-template-columns:27% 46% 27% !important;
+  gap:0 !important;
+  align-items:start;
+  width:100%;
+  box-sizing:border-box;
+}
+.attendance-profile-stats.three .attendance-profile-stat{
+  min-width:0;
+  width:100%;
+  box-sizing:border-box;
+  padding:0 5px;
+  text-align:center;
+  overflow:hidden;
+}
+.attendance-profile-stats.three .attendance-profile-stat-label{
+  font-size:11px !important;
+  line-height:1.15 !important;
+  white-space:nowrap !important;
+  overflow:hidden;
+  text-overflow:clip;
+  text-align:center;
+}
+.attendance-profile-stats.three .attendance-profile-stat-value{
+  font-size:17px !important;
+  line-height:1.15 !important;
+  margin-top:6px !important;
+  white-space:nowrap !important;
+  text-align:center;
+}
+/* Schedule stays entirely inside the middle column */
+.attendance-profile-stats.three .schedule-stat{
+  width:100%;
+  overflow:hidden;
+}
+.attendance-profile-stats.three .schedule-stat .student-schedule-days{
+  width:100%;
+  display:flex;
+  gap:2px !important;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:nowrap;
+  box-sizing:border-box;
+  margin-top:6px !important;
+}
+.attendance-profile-stats.three .schedule-stat .student-day{
+  flex:1 1 0 !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;
+  font-size:10px !important;
+  padding:6px 1px !important;
+  border-radius:8px !important;
+  box-sizing:border-box;
+  white-space:nowrap;
+  text-align:center;
+}
+.attendance-profile-stats.three .schedule-stat .student-schedule-note{
+  display:block;
+  font-size:10px !important;
+  line-height:1.1 !important;
+  margin-top:6px !important;
+  text-align:center;
+  white-space:nowrap;
+}
+.attendance-profile-stats.three .student-joining-date{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  white-space:nowrap;
+  font-size:14px !important;
+  line-height:1.15;
+  font-weight:900;
+}
+.attendance-profile-stats.three .student-joining-date .cal{font-size:13px !important;}
+@media(max-width:390px){
+  .attendance-profile-stats.three{grid-template-columns:27% 46% 27% !important;}
+  .attendance-profile-stats.three .attendance-profile-stat{padding:0 3px;}
+  .attendance-profile-stats.three .attendance-profile-stat-label{font-size:9px !important;}
+  .attendance-profile-stats.three .attendance-profile-stat-value{font-size:15px !important;}
+  .attendance-profile-stats.three .schedule-stat .student-schedule-days{gap:1px !important;}
+  .attendance-profile-stats.three .schedule-stat .student-day{font-size:8px !important;padding:5px 0 !important;}
+  .attendance-profile-stats.three .schedule-stat .student-schedule-note{font-size:9px !important;}
+  .attendance-profile-stats.three .student-joining-date{font-size:11px !important;gap:2px;}
+  .attendance-profile-stats.three .student-joining-date .cal{font-size:11px !important;}
+}
+
+  /* Final 3-column student header layout: no overlap, full-width middle schedule. */
+  .student-stats .student-stat:nth-child(1){width:auto;}
+  .student-stats .student-stat:nth-child(2){width:auto;}
+  .student-stats .student-stat:nth-child(3){width:auto;}
+  @media(max-width:480px){
+    .student-stats{grid-template-columns:1fr 1.55fr 1.2fr;gap:0;}
+    .student-stat{padding-left:3px;padding-right:3px;}
+    .student-schedule-days{gap:2px;}
+    .student-day{height:20px;font-size:8px;padding:0 1px;}
+    .student-joining-date{font-size:10px;gap:2px;}
+  }
+</style>
 </body>
 </html>
